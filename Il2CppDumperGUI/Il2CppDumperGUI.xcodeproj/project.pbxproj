@@ -1,0 +1,618 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E68E8BD42D96E89F0055643D /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = E68E8BD32D96E89F0055643D /* config.json */; };
+		E6C0D0592D8890460060BA6A /* Il2CppDumperGUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0582D8890460060BA6A /* Il2CppDumperGUIApp.swift */; };
+		E6C0D05B2D8890460060BA6A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D05A2D8890460060BA6A /* MainView.swift */; };
+		E6C0D05D2D8890480060BA6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D05C2D8890480060BA6A /* Assets.xcassets */; };
+		E6C0D0602D8890480060BA6A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D05F2D8890480060BA6A /* Preview Assets.xcassets */; };
+		E6C0D0AC2D88C6890060BA6A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0AB2D88C6890060BA6A /* SettingsView.swift */; };
+		E6C0D0AE2D88DC2A0060BA6A /* Il2CppDumper in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0AD2D88DC2A0060BA6A /* Il2CppDumper */; };
+		E6C0D0B42D88E7E00060BA6A /* FolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0B32D88E7E00060BA6A /* FolderPickerView.swift */; };
+		E6C0D0B62D88E8040060BA6A /* FilePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0B52D88E8040060BA6A /* FilePickerView.swift */; };
+		E6C0D0B82D88E82B0060BA6A /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0B72D88E82B0060BA6A /* LogView.swift */; };
+		E6C0D0BB2D88E8800060BA6A /* NSOpenPanel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0BA2D88E8800060BA6A /* NSOpenPanel+Extensions.swift */; };
+		E6C0D0BE2D88E8C70060BA6A /* ActionButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0BD2D88E8C70060BA6A /* ActionButtonStyle.swift */; };
+		E6C0D0C12D88E8E20060BA6A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0C02D88E8E20060BA6A /* Constants.swift */; };
+		E6C0D0C52D933C2D0060BA6A /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0C42D933C2D0060BA6A /* Script.swift */; };
+		E6C0D0D02D933E680060BA6A /* ida_py3.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0C62D933E660060BA6A /* ida_py3.py */; };
+		E6C0D0D12D933E680060BA6A /* ida_with_struct_py3.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0C72D933E660060BA6A /* ida_with_struct_py3.py */; };
+		E6C0D0D22D933E680060BA6A /* ghidra_wasm.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0C82D933E670060BA6A /* ghidra_wasm.py */; };
+		E6C0D0D32D933E680060BA6A /* hopper-py3.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0C92D933E670060BA6A /* hopper-py3.py */; };
+		E6C0D0D42D933E680060BA6A /* ida_with_struct.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0CA2D933E670060BA6A /* ida_with_struct.py */; };
+		E6C0D0D52D933E680060BA6A /* ghidra.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0CB2D933E670060BA6A /* ghidra.py */; };
+		E6C0D0D62D933E680060BA6A /* il2cpp_header_to_ghidra.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0CC2D933E670060BA6A /* il2cpp_header_to_ghidra.py */; };
+		E6C0D0D72D933E680060BA6A /* ghidra_with_struct.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0CD2D933E670060BA6A /* ghidra_with_struct.py */; };
+		E6C0D0D82D933E680060BA6A /* ida.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0CE2D933E670060BA6A /* ida.py */; };
+		E6C0D0D92D933E680060BA6A /* il2cpp_header_to_binja.py in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0CF2D933E680060BA6A /* il2cpp_header_to_binja.py */; };
+		E6C0D0E62D93448A0060BA6A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0E42D93448A0060BA6A /* Localizable.strings */; };
+		E6C0D0E92D9344A20060BA6A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E6C0D0E72D9344A20060BA6A /* Localizable.strings */; };
+		E6C0D0EB2D9344CD0060BA6A /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0EA2D9344CD0060BA6A /* Localization.swift */; };
+		E6C0D0ED2D9347F50060BA6A /* SecondaryButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C0D0EC2D9347F50060BA6A /* SecondaryButtonStyle.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E68E8BD32D96E89F0055643D /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
+		E6C0D0552D8890460060BA6A /* Il2CppDumperGUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Il2CppDumperGUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6C0D0582D8890460060BA6A /* Il2CppDumperGUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Il2CppDumperGUIApp.swift; sourceTree = "<group>"; };
+		E6C0D05A2D8890460060BA6A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		E6C0D05C2D8890480060BA6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E6C0D05F2D8890480060BA6A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E6C0D0612D8890480060BA6A /* Il2CppDumperGUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Il2CppDumperGUI.entitlements; sourceTree = "<group>"; };
+		E6C0D0AB2D88C6890060BA6A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E6C0D0AD2D88DC2A0060BA6A /* Il2CppDumper */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = Il2CppDumper; sourceTree = "<group>"; };
+		E6C0D0B32D88E7E00060BA6A /* FolderPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPickerView.swift; sourceTree = "<group>"; };
+		E6C0D0B52D88E8040060BA6A /* FilePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePickerView.swift; sourceTree = "<group>"; };
+		E6C0D0B72D88E82B0060BA6A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
+		E6C0D0BA2D88E8800060BA6A /* NSOpenPanel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSOpenPanel+Extensions.swift"; sourceTree = "<group>"; };
+		E6C0D0BD2D88E8C70060BA6A /* ActionButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonStyle.swift; sourceTree = "<group>"; };
+		E6C0D0C02D88E8E20060BA6A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E6C0D0C42D933C2D0060BA6A /* Script.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
+		E6C0D0C62D933E660060BA6A /* ida_py3.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ida_py3.py; sourceTree = "<group>"; };
+		E6C0D0C72D933E660060BA6A /* ida_with_struct_py3.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ida_with_struct_py3.py; sourceTree = "<group>"; };
+		E6C0D0C82D933E670060BA6A /* ghidra_wasm.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ghidra_wasm.py; sourceTree = "<group>"; };
+		E6C0D0C92D933E670060BA6A /* hopper-py3.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "hopper-py3.py"; sourceTree = "<group>"; };
+		E6C0D0CA2D933E670060BA6A /* ida_with_struct.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ida_with_struct.py; sourceTree = "<group>"; };
+		E6C0D0CB2D933E670060BA6A /* ghidra.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ghidra.py; sourceTree = "<group>"; };
+		E6C0D0CC2D933E670060BA6A /* il2cpp_header_to_ghidra.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = il2cpp_header_to_ghidra.py; sourceTree = "<group>"; };
+		E6C0D0CD2D933E670060BA6A /* ghidra_with_struct.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ghidra_with_struct.py; sourceTree = "<group>"; };
+		E6C0D0CE2D933E670060BA6A /* ida.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = ida.py; sourceTree = "<group>"; };
+		E6C0D0CF2D933E680060BA6A /* il2cpp_header_to_binja.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = il2cpp_header_to_binja.py; sourceTree = "<group>"; };
+		E6C0D0E32D9344500060BA6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E6C0D0E52D93448A0060BA6A /* ru */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; name = ru; path = Localizable.strings; sourceTree = "<group>"; };
+		E6C0D0E82D9344A20060BA6A /* en */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E6C0D0EA2D9344CD0060BA6A /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
+		E6C0D0EC2D9347F50060BA6A /* SecondaryButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryButtonStyle.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E6C0D0522D8890460060BA6A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E6C0D04C2D8890450060BA6A = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0572D8890460060BA6A /* Il2CppDumperGUI */,
+				E6C0D0562D8890460060BA6A /* Products */,
+				E6C0D0A92D88A1070060BA6A /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E6C0D0562D8890460060BA6A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0552D8890460060BA6A /* Il2CppDumperGUI.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E6C0D0572D8890460060BA6A /* Il2CppDumperGUI */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0E32D9344500060BA6A /* Info.plist */,
+				E6C0D0E12D9343F70060BA6A /* Utilities */,
+				E6C0D0BF2D88E8CE0060BA6A /* Models */,
+				E6C0D0BC2D88E8B30060BA6A /* Styles */,
+				E6C0D0B22D88E7990060BA6A /* Views */,
+				E6C0D0712D8895130060BA6A /* Resources */,
+				E6C0D0612D8890480060BA6A /* Il2CppDumperGUI.entitlements */,
+				E6C0D05C2D8890480060BA6A /* Assets.xcassets */,
+				E6C0D05E2D8890480060BA6A /* Preview Content */,
+			);
+			path = Il2CppDumperGUI;
+			sourceTree = "<group>";
+		};
+		E6C0D05E2D8890480060BA6A /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D05F2D8890480060BA6A /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E6C0D0712D8895130060BA6A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0DE2D93435B0060BA6A /* Localization */,
+				E6C0D0DA2D933E970060BA6A /* Scripts */,
+				E6C0D0AD2D88DC2A0060BA6A /* Il2CppDumper */,
+				E68E8BD32D96E89F0055643D /* config.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E6C0D0A92D88A1070060BA6A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E6C0D0B22D88E7990060BA6A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0DC2D9343200060BA6A /* Settings */,
+				E6C0D0DB2D9342FF0060BA6A /* Main */,
+				E6C0D0DD2D93432F0060BA6A /* Common */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E6C0D0B92D88E8670060BA6A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0BA2D88E8800060BA6A /* NSOpenPanel+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E6C0D0BC2D88E8B30060BA6A /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0BD2D88E8C70060BA6A /* ActionButtonStyle.swift */,
+				E6C0D0EC2D9347F50060BA6A /* SecondaryButtonStyle.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
+		E6C0D0BF2D88E8CE0060BA6A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0C02D88E8E20060BA6A /* Constants.swift */,
+				E6C0D0C42D933C2D0060BA6A /* Script.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E6C0D0DA2D933E970060BA6A /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0C82D933E670060BA6A /* ghidra_wasm.py */,
+				E6C0D0CD2D933E670060BA6A /* ghidra_with_struct.py */,
+				E6C0D0CB2D933E670060BA6A /* ghidra.py */,
+				E6C0D0C92D933E670060BA6A /* hopper-py3.py */,
+				E6C0D0C62D933E660060BA6A /* ida_py3.py */,
+				E6C0D0C72D933E660060BA6A /* ida_with_struct_py3.py */,
+				E6C0D0CA2D933E670060BA6A /* ida_with_struct.py */,
+				E6C0D0CE2D933E670060BA6A /* ida.py */,
+				E6C0D0CF2D933E680060BA6A /* il2cpp_header_to_binja.py */,
+				E6C0D0CC2D933E670060BA6A /* il2cpp_header_to_ghidra.py */,
+			);
+			path = Scripts;
+			sourceTree = "<group>";
+		};
+		E6C0D0DB2D9342FF0060BA6A /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0582D8890460060BA6A /* Il2CppDumperGUIApp.swift */,
+				E6C0D05A2D8890460060BA6A /* MainView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		E6C0D0DC2D9343200060BA6A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0AB2D88C6890060BA6A /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		E6C0D0DD2D93432F0060BA6A /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0B32D88E7E00060BA6A /* FolderPickerView.swift */,
+				E6C0D0B52D88E8040060BA6A /* FilePickerView.swift */,
+				E6C0D0B72D88E82B0060BA6A /* LogView.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		E6C0D0DE2D93435B0060BA6A /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0E02D93438A0060BA6A /* ru.lproj */,
+				E6C0D0DF2D9343840060BA6A /* en.lproj */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		E6C0D0DF2D9343840060BA6A /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0E72D9344A20060BA6A /* Localizable.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
+		E6C0D0E02D93438A0060BA6A /* ru.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0E42D93448A0060BA6A /* Localizable.strings */,
+			);
+			path = ru.lproj;
+			sourceTree = "<group>";
+		};
+		E6C0D0E12D9343F70060BA6A /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0E22D9344040060BA6A /* Localization */,
+				E6C0D0B92D88E8670060BA6A /* Extensions */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		E6C0D0E22D9344040060BA6A /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				E6C0D0EA2D9344CD0060BA6A /* Localization.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E6C0D0542D8890460060BA6A /* Il2CppDumperGUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E6C0D0642D8890480060BA6A /* Build configuration list for PBXNativeTarget "Il2CppDumperGUI" */;
+			buildPhases = (
+				E6C0D0512D8890460060BA6A /* Sources */,
+				E6C0D0522D8890460060BA6A /* Frameworks */,
+				E6C0D0532D8890460060BA6A /* Resources */,
+				E6C0D0AF2D88DDB30060BA6A /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Il2CppDumperGUI;
+			productName = Il2CppDumperGUI;
+			productReference = E6C0D0552D8890460060BA6A /* Il2CppDumperGUI.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E6C0D04D2D8890450060BA6A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				KnownAssetTags = (
+					New,
+				);
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					E6C0D0542D8890460060BA6A = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = E6C0D0502D8890450060BA6A /* Build configuration list for PBXProject "Il2CppDumperGUI" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ru,
+			);
+			mainGroup = E6C0D04C2D8890450060BA6A;
+			productRefGroup = E6C0D0562D8890460060BA6A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E6C0D0542D8890460060BA6A /* Il2CppDumperGUI */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E6C0D0532D8890460060BA6A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E6C0D0D32D933E680060BA6A /* hopper-py3.py in Resources */,
+				E6C0D0D52D933E680060BA6A /* ghidra.py in Resources */,
+				E6C0D0602D8890480060BA6A /* Preview Assets.xcassets in Resources */,
+				E6C0D0E62D93448A0060BA6A /* Localizable.strings in Resources */,
+				E6C0D0D72D933E680060BA6A /* ghidra_with_struct.py in Resources */,
+				E6C0D0D62D933E680060BA6A /* il2cpp_header_to_ghidra.py in Resources */,
+				E6C0D05D2D8890480060BA6A /* Assets.xcassets in Resources */,
+				E6C0D0D02D933E680060BA6A /* ida_py3.py in Resources */,
+				E6C0D0AE2D88DC2A0060BA6A /* Il2CppDumper in Resources */,
+				E68E8BD42D96E89F0055643D /* config.json in Resources */,
+				E6C0D0D12D933E680060BA6A /* ida_with_struct_py3.py in Resources */,
+				E6C0D0E92D9344A20060BA6A /* Localizable.strings in Resources */,
+				E6C0D0D42D933E680060BA6A /* ida_with_struct.py in Resources */,
+				E6C0D0D92D933E680060BA6A /* il2cpp_header_to_binja.py in Resources */,
+				E6C0D0D22D933E680060BA6A /* ghidra_wasm.py in Resources */,
+				E6C0D0D82D933E680060BA6A /* ida.py in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E6C0D0AF2D88DDB30060BA6A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "chmod 755 \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Resources/Il2CppDumper\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E6C0D0512D8890460060BA6A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E6C0D0AC2D88C6890060BA6A /* SettingsView.swift in Sources */,
+				E6C0D0B82D88E82B0060BA6A /* LogView.swift in Sources */,
+				E6C0D0EB2D9344CD0060BA6A /* Localization.swift in Sources */,
+				E6C0D0BB2D88E8800060BA6A /* NSOpenPanel+Extensions.swift in Sources */,
+				E6C0D0ED2D9347F50060BA6A /* SecondaryButtonStyle.swift in Sources */,
+				E6C0D0B62D88E8040060BA6A /* FilePickerView.swift in Sources */,
+				E6C0D0C52D933C2D0060BA6A /* Script.swift in Sources */,
+				E6C0D05B2D8890460060BA6A /* MainView.swift in Sources */,
+				E6C0D0BE2D88E8C70060BA6A /* ActionButtonStyle.swift in Sources */,
+				E6C0D0B42D88E7E00060BA6A /* FolderPickerView.swift in Sources */,
+				E6C0D0592D8890460060BA6A /* Il2CppDumperGUIApp.swift in Sources */,
+				E6C0D0C12D88E8E20060BA6A /* Constants.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E6C0D0E42D93448A0060BA6A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E6C0D0E52D93448A0060BA6A /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		E6C0D0E72D9344A20060BA6A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E6C0D0E82D9344A20060BA6A /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E6C0D0622D8890480060BA6A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E6C0D0632D8890480060BA6A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		E6C0D0652D8890480060BA6A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Il2CppDumperGUI/Il2CppDumperGUI.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Il2CppDumperGUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Il2CppDumperGUI;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leeksov.Il2CppDumperGUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E6C0D0662D8890480060BA6A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Il2CppDumperGUI/Il2CppDumperGUI.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Il2CppDumperGUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Il2CppDumperGUI;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leeksov.Il2CppDumperGUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E6C0D0502D8890450060BA6A /* Build configuration list for PBXProject "Il2CppDumperGUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E6C0D0622D8890480060BA6A /* Debug */,
+				E6C0D0632D8890480060BA6A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E6C0D0642D8890480060BA6A /* Build configuration list for PBXNativeTarget "Il2CppDumperGUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E6C0D0652D8890480060BA6A /* Debug */,
+				E6C0D0662D8890480060BA6A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E6C0D04D2D8890450060BA6A /* Project object */;
+}
