@@ -110,17 +110,17 @@
 				E6C0D0712D8895130060BA6A /* Resources */,
 				E6C0D0612D8890480060BA6A /* Il2CppDumperGUI.entitlements */,
 				E6C0D05C2D8890480060BA6A /* Assets.xcassets */,
-				E6C0D05E2D8890480060BA6A /* Preview Content */,
+				E6C0D05E2D8890480060BA6A /* PreviewContent */,
 			);
 			path = Il2CppDumperGUI;
 			sourceTree = "<group>";
 		};
-		E6C0D05E2D8890480060BA6A /* Preview Content */ = {
+		E6C0D05E2D8890480060BA6A /* PreviewContent */ = {
 			isa = PBXGroup;
 			children = (
 				E6C0D05F2D8890480060BA6A /* Preview Assets.xcassets */,
 			);
-			path = "Preview Content";
+			path = "PreviewContent";
 			sourceTree = "<group>";
 		};
 		E6C0D0712D8895130060BA6A /* Resources */ = {
@@ -537,7 +537,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/PreviewContent\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -569,7 +569,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/PreviewContent\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
