@@ -25,9 +25,8 @@ Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) —
 
 ## Screenshots
 
-| Main | Settings |
-|------|----------|
-| ![Main](https://github.com/user-attachments/assets/main.png) | ![Settings](https://github.com/user-attachments/assets/settings.png) |
+<!-- To add screenshots: edit this README on GitHub, drag & drop images into the editor -->
+<!-- GitHub will auto-upload and generate URLs like: https://github.com/user-attachments/assets/xxxxx -->
 
 ## How It Works
 
