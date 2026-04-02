@@ -1,0 +1,21 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+xcuserdata/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# .NET build artifacts
+Il2CppPostProcess/bin/
+Il2CppPostProcess/obj/
+
+# Temp
+*.tmp
+
+# Large binaries (built separately)
+Il2CppDumperGUI/Resources/Il2CppPostProcess
