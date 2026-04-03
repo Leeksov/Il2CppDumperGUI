@@ -3,6 +3,8 @@
 #include <fstream>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
+#include <sys/wait.h>
 
 static std::string lastError;
 
@@ -174,16 +176,34 @@ static int il2cpp_dump_impl(
 
         // Run post-process tool (StructGenerator + DummyDLL) if available
         if (postProcessToolPath && postProcessToolPath[0] != '\0') {
+            std::string toolPath(postProcessToolPath);
+            // Ensure execute permission and remove quarantine
+            system(("chmod +x \"" + toolPath + "\" 2>/dev/null").c_str());
+            system(("xattr -dr com.apple.quarantine \"" + toolPath + "\" 2>/dev/null").c_str());
+            // Also fix DummyDll.dll path (same directory as tool)
+            std::string toolDir = toolPath.substr(0, toolPath.rfind('/') + 1);
+
             logFunc("Running post-process (struct + dummy dll)...");
-            std::string cmd = std::string("\"") + postProcessToolPath + "\" "
+            std::string cmd = "\"" + toolPath + "\" "
                 + "\"" + il2cppPath + "\" "
                 + "\"" + metadataPath + "\" "
-                + "\"" + outPath + "\"";
-            int ret = system(cmd.c_str());
-            if (ret == 0) {
-                logFunc("Post-process complete!");
+                + "\"" + outPath + "\" 2>&1";
+            FILE* pipe = popen(cmd.c_str(), "r");
+            if (pipe) {
+                char buf[512];
+                while (fgets(buf, sizeof(buf), pipe) != nullptr) {
+                    std::string line(buf);
+                    while (!line.empty() && (line.back() == '\n' || line.back() == '\r')) line.pop_back();
+                    if (!line.empty()) logFunc("[PostProcess] " + line);
+                }
+                int ret = pclose(pipe);
+                if (ret == 0) {
+                    logFunc("Post-process complete!");
+                } else {
+                    logFunc("Post-process failed (exit code " + std::to_string(WEXITSTATUS(ret)) + ")");
+                }
             } else {
-                logFunc("Post-process failed (code " + std::to_string(ret) + ")");
+                logFunc("Post-process: failed to launch tool");
             }
         }
 
