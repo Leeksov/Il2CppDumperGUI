@@ -177,11 +177,11 @@ static int il2cpp_dump_impl(
         // Run post-process tool (StructGenerator + DummyDLL) if available
         if (postProcessToolPath && postProcessToolPath[0] != '\0') {
             std::string toolPath(postProcessToolPath);
-            // Ensure execute permission and remove quarantine
+            // Ensure execute permission, remove quarantine, ad-hoc re-sign
+            // (macOS 14+ kills unsigned bundled binaries with SIGKILL = exit 137)
             system(("chmod +x \"" + toolPath + "\" 2>/dev/null").c_str());
             system(("xattr -dr com.apple.quarantine \"" + toolPath + "\" 2>/dev/null").c_str());
-            // Also fix DummyDll.dll path (same directory as tool)
-            std::string toolDir = toolPath.substr(0, toolPath.rfind('/') + 1);
+            system(("codesign --force --sign - \"" + toolPath + "\" 2>/dev/null").c_str());
 
             logFunc("Running post-process (struct + dummy dll)...");
             std::string cmd = "\"" + toolPath + "\" "
@@ -197,10 +197,15 @@ static int il2cpp_dump_impl(
                     if (!line.empty()) logFunc("[PostProcess] " + line);
                 }
                 int ret = pclose(pipe);
+                int exitCode = WEXITSTATUS(ret);
                 if (ret == 0) {
                     logFunc("Post-process complete!");
+                } else if (exitCode == 137) {
+                    logFunc("Post-process killed by macOS (signature issue). Try running:");
+                    logFunc("  sudo xattr -dr com.apple.quarantine /Applications/Il2CppDumperGUI.app");
+                    logFunc("  sudo codesign --force --deep --sign - /Applications/Il2CppDumperGUI.app");
                 } else {
-                    logFunc("Post-process failed (exit code " + std::to_string(WEXITSTATUS(ret)) + ")");
+                    logFunc("Post-process failed (exit code " + std::to_string(exitCode) + ")");
                 }
             } else {
                 logFunc("Post-process: failed to launch tool");
