@@ -494,7 +494,8 @@ struct MainView: View {
         let panel = NSOpenPanel()
         panel.canChooseFiles = true; panel.canChooseDirectories = false; panel.allowsMultipleSelection = false
         if !extensions.isEmpty { panel.allowedContentTypes = extensions.compactMap { UTType(filenameExtension: $0) } }
-        if panel.runModal() == .OK, let url = panel.url {
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
             path.wrappedValue = url.path
             if autoSetOutputDirectory { outputDirectoryPath = url.deletingLastPathComponent().path }
         }
@@ -503,7 +504,9 @@ struct MainView: View {
     private func pickFolder(for path: Binding<String>) {
         let panel = NSOpenPanel()
         panel.canChooseFiles = false; panel.canChooseDirectories = true; panel.allowsMultipleSelection = false
-        if panel.runModal() == .OK, let url = panel.url { path.wrappedValue = url.path }
+        panel.begin { response in
+            if response == .OK, let url = panel.url { path.wrappedValue = url.path }
+        }
     }
 
     private func openOutputFolder() {
@@ -573,49 +576,58 @@ struct MainView: View {
 
     // MARK: - Core Dump
     private func performDump(exe: String, meta: String, outDir: String) {
-        let cfgMethod = dumpMethod ? Int32(1) : 0
-        let cfgField = dumpField ? Int32(1) : 0
-        let cfgProp = dumpProperty ? Int32(1) : 0
-        let cfgAttr = dumpAttribute ? Int32(1) : 0
-        let cfgFieldOff = dumpFieldOffset ? Int32(1) : 0
-        let cfgMethodOff = dumpMethodOffset ? Int32(1) : 0
-        let cfgTypeIdx = dumpTypeDefIndex ? Int32(1) : 0
-        let cfgForceVer = forceIl2CppVersion ? Int32(1) : 0
-        let cfgVer = Double(forceVersion) ?? 24.3
-        let cfgForceDump = forceDump ? Int32(1) : 0
-        let manualCode = codeRegistration
-        let manualMeta = metadataRegistration
-        let postProcessPath = Bundle.main.path(forResource: "Il2CppPostProcess", ofType: nil) ?? ""
-
-        let logObserver = NotificationCenter.default.addObserver(
-            forName: .il2cppLog, object: nil, queue: .main
-        ) { n in
-            if let msg = n.userInfo?["message"] as? String { logText += "\(msg)\n" }
+        #if arch(arm64)
+        let cliName = "Il2CppDumper-arm64"
+        #else
+        let cliName = "Il2CppDumper-x64"
+        #endif
+        guard let cliPath = Bundle.main.path(forResource: cliName, ofType: nil) else {
+            DispatchQueue.main.async { appendLog("Missing bundled dumper: \(cliName). Run ./build_postprocess.sh before building the app.") }
+            return
         }
+        let config: [String: Any] = [
+            "DumpMethod": dumpMethod, "DumpField": dumpField,
+            "DumpProperty": dumpProperty, "DumpAttribute": dumpAttribute,
+            "DumpFieldOffset": dumpFieldOffset, "DumpMethodOffset": dumpMethodOffset,
+            "DumpTypeDefIndex": dumpTypeDefIndex, "GenerateStruct": generateStruct,
+            "GenerateDummyDll": true, "RequireAnyKey": false,
+            "ForceIl2CppVersion": forceIl2CppVersion,
+            "ForceVersion": Double(forceVersion) ?? 24.3, "ForceDump": forceDump
+        ]
+        do {
+            try FileManager.default.createDirectory(atPath: outDir, withIntermediateDirectories: true)
+            let configURL = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("il2cpp-config-\(UUID().uuidString).json")
+            defer { try? FileManager.default.removeItem(at: configURL) }
+            try JSONSerialization.data(withJSONObject: config).write(to: configURL)
 
-        let result = il2cpp_dump_ex(
-            exe, meta, outDir,
-            cfgMethod, cfgField, cfgProp, cfgAttr,
-            cfgFieldOff, cfgMethodOff, cfgTypeIdx,
-            cfgForceVer, cfgVer, cfgForceDump,
-            manualCode, manualMeta, postProcessPath,
-            { cStr, _ in
-                guard let cStr = cStr else { return }
-                NotificationCenter.default.post(name: .il2cppLog, object: nil, userInfo: ["message": String(cString: cStr)])
-            },
-            nil
-        )
-
-        NotificationCenter.default.removeObserver(logObserver)
-
-        DispatchQueue.main.async {
-            if result == 0 {
-                appendLog(LocalizedString("dump_done"))
-            } else {
-                let err = String(cString: il2cpp_get_last_error())
-                appendLog(LocalizedString("dump_failed_code", result))
-                if !err.isEmpty { appendLog(err) }
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: cliPath)
+            var args = [exe, meta, "--output", outDir, "--config", configURL.path,
+                        "--scripts", "none", "--no-pause"]
+            if !codeRegistration.isEmpty && !metadataRegistration.isEmpty {
+                args += ["--code-registration", codeRegistration,
+                         "--metadata-registration", metadataRegistration]
             }
+            process.arguments = args
+            let output = Pipe()
+            process.standardInput = FileHandle.nullDevice
+            process.standardOutput = output
+            process.standardError = output
+            try process.run()
+            let data = output.fileHandleForReading.readDataToEndOfFile()
+            process.waitUntilExit()
+            let lines = String(decoding: data, as: UTF8.self)
+            DispatchQueue.main.async {
+                for line in lines.split(separator: "\n") { appendLog(String(line)) }
+                if process.terminationReason == .exit && process.terminationStatus == 0 {
+                    appendLog(LocalizedString("dump_done"))
+                } else {
+                    appendLog("Dump failed: \(process.terminationReason == .uncaughtSignal ? "signal" : "exit code") \(process.terminationStatus)")
+                }
+            }
+        } catch {
+            DispatchQueue.main.async { appendLog("Dump failed: \(error.localizedDescription)") }
         }
     }
 
