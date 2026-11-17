@@ -1,13 +1,13 @@
 # Il2CppDumper GUI for macOS
 
-Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) — dump IL2CPP Unity games without external binaries.
+Native macOS GUI for the [AndnixSH Il2CppDumper fork](https://github.com/AndnixSH/Il2CppDumper). The app bundles a self-contained CLI for each Mac architecture.
 
 ## Features
 
-- **Native C++ dumper** — no external binaries, all parsing built-in
+- **Bundled dumper CLI** — based on AndnixSH/Il2CppDumper at commit `526f7c13`
 - **IPA / APK / XAPK / APKS auto-extraction** — drag & drop archive to dump
 - **All binary formats** — PE, ELF32/64, Mach-O 32/64, Fat Mach-O, WebAssembly, NSO
-- **IL2CPP versions 16–31** with automatic version detection
+- **Metadata versions 16–39 and 104–111** via the bundled fork
 - **Full dump output:**
   - `dump.cs` — C# pseudocode (types, methods, fields, properties)
   - `script.json` — for Ghidra / IDA / Binary Ninja
@@ -31,9 +31,10 @@ Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) —
 
 ## How It Works
 
-1. **Core dump** (`dump.cs`) is generated natively in C++ — fast, no dependencies
-2. **Post-processing** (struct generation + dummy DLL) uses a bundled self-contained .NET tool
-3. **IPA/APK** files are automatically extracted, binary and metadata located, then dumped
+The GUI invokes the bundled, self-contained Il2CppDumper CLI. The same process creates
+`dump.cs`, structure files, and `DummyDll/`; its exit status and log are shown in the GUI.
+The older native C++ port remains in the tree for reference but is no longer the dump path.
+The forked CLI source is vendored in `vendor/AndnixSH` with its license.
 
 ## Usage
 
@@ -47,7 +48,7 @@ Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) —
 ### Requirements
 - Xcode 14+
 - macOS 12.0+
-- Docker (for building the post-process tool)
+- .NET 10 SDK (to build the bundled CLI)
 
 ### Build Steps
 
@@ -56,7 +57,7 @@ Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) —
 git clone https://github.com/Leeksov/Il2CppDumperGUI.git
 cd Il2CppDumperGUI
 
-# Build post-process tool (StructGenerator + DummyDLL)
+# Build the self-contained arm64 and x64 dumper CLIs
 ./build_postprocess.sh
 
 # Open in Xcode and build
@@ -65,7 +66,7 @@ open Il2CppDumperGUI.xcodeproj
 
 ## Credits
 
-- [AndnixSH](https://github.com/AndnixSH/Il2CppDumper-GUI) — Windows Il2CppDumper-GUI (original GUI design)
+- [AndnixSH](https://github.com/AndnixSH/Il2CppDumper) — current dumper core and CLI (vendored at `526f7c13`)
 - [Perfare](https://github.com/Perfare/Il2CppDumper) — Il2CppDumper (core dumping logic)
 - [djkaty](https://github.com/djkaty/Il2CppInspector) — Il2CppInspector (contributions)
 

@@ -15,7 +15,8 @@
 		5F3C4A01868F850502CB5F9A /* Il2CppDumperGUI-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = CDC04A48AAD76EC3AA9F3D45 /* Il2CppDumperGUI-Bridging-Header.h */; };
 		642143549537A37DF97B2485 /* il2cpp_bridge.h in Headers */ = {isa = PBXBuildFile; fileRef = ACB540AE843612222C8E088A /* il2cpp_bridge.h */; };
 		847947D7A7BFB9B013820293 /* il2cpp_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 71964EEA840F833A9FE7A232 /* il2cpp_types.h */; };
-		AA000001AABB000100000001 /* Il2CppPostProcess in Resources */ = {isa = PBXBuildFile; fileRef = AA000002AABB000200000001 /* Il2CppPostProcess */; };
+		AA000001AABB000100000001 /* Il2CppDumper-arm64 in Resources */ = {isa = PBXBuildFile; fileRef = AA000002AABB000200000001 /* Il2CppDumper-arm64 */; };
+		AA000005AABB000500000001 /* Il2CppDumper-x64 in Resources */ = {isa = PBXBuildFile; fileRef = AA000006AABB000600000001 /* Il2CppDumper-x64 */; };
 		AA000003AABB000300000001 /* Il2CppDummyDll.dll in Resources */ = {isa = PBXBuildFile; fileRef = AA000004AABB000400000001 /* Il2CppDummyDll.dll */; };
 		C6CA45F281EA28DDF4B877A1 /* il2cpp_il2cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EB448FFB6FA88C1B06BBDF1 /* il2cpp_il2cpp.cpp */; };
 		C9B043B28985D0F60AF563D8 /* il2cpp_executor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D5024B7F8B8B76253A8C37D0 /* il2cpp_executor.cpp */; };
@@ -50,7 +51,8 @@
 		5EB448FFB6FA88C1B06BBDF1 /* il2cpp_il2cpp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = il2cpp_il2cpp.cpp; path = Il2CppDumperGUI/Il2CppDumperLib/il2cpp_il2cpp.cpp; sourceTree = SOURCE_ROOT; };
 		71964EEA840F833A9FE7A232 /* il2cpp_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = il2cpp_types.h; path = Il2CppDumperGUI/Il2CppDumperLib/il2cpp_types.h; sourceTree = SOURCE_ROOT; };
 		9EBD464AB7DB3F3D2637815A /* il2cpp_metadata.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = il2cpp_metadata.cpp; path = Il2CppDumperGUI/Il2CppDumperLib/il2cpp_metadata.cpp; sourceTree = SOURCE_ROOT; };
-		AA000002AABB000200000001 /* Il2CppPostProcess */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = Il2CppPostProcess; sourceTree = "<group>"; };
+		AA000002AABB000200000001 /* Il2CppDumper-arm64 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "Il2CppDumper-arm64"; sourceTree = "<group>"; };
+		AA000006AABB000600000001 /* Il2CppDumper-x64 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "Il2CppDumper-x64"; sourceTree = "<group>"; };
 		AA000004AABB000400000001 /* Il2CppDummyDll.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = Il2CppDummyDll.dll; sourceTree = "<group>"; };
 		ACB540AE843612222C8E088A /* il2cpp_bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = il2cpp_bridge.h; path = Il2CppDumperGUI/Il2CppDumperLib/il2cpp_bridge.h; sourceTree = SOURCE_ROOT; };
 		CDC04A48AAD76EC3AA9F3D45 /* Il2CppDumperGUI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Il2CppDumperGUI-Bridging-Header.h"; path = "Il2CppDumperGUI/Il2CppDumperGUI-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
@@ -160,7 +162,8 @@
 				E6C0D0DE2D93435B0060BA6A /* Localization */,
 				E6C0D0DA2D933E970060BA6A /* Scripts */,
 				E68E8BD32D96E89F0055643D /* config.json */,
-				AA000002AABB000200000001 /* Il2CppPostProcess */,
+				AA000002AABB000200000001 /* Il2CppDumper-arm64 */,
+				AA000006AABB000600000001 /* Il2CppDumper-x64 */,
 				AA000004AABB000400000001 /* Il2CppDummyDll.dll */,
 			);
 			path = Resources;
@@ -346,7 +349,8 @@
 				E6C0D05D2D8890480060BA6A /* Assets.xcassets in Resources */,
 				E6C0D0D02D933E680060BA6A /* ida_py3.py in Resources */,
 				E68E8BD42D96E89F0055643D /* config.json in Resources */,
-				AA000001AABB000100000001 /* Il2CppPostProcess in Resources */,
+				AA000001AABB000100000001 /* Il2CppDumper-arm64 in Resources */,
+				AA000005AABB000500000001 /* Il2CppDumper-x64 in Resources */,
 				AA000003AABB000300000001 /* Il2CppDummyDll.dll in Resources */,
 				E6C0D0D12D933E680060BA6A /* ida_with_struct_py3.py in Resources */,
 				E6C0D0E92D9344A20060BA6A /* Localizable.strings in Resources */,

@@ -19,3 +19,10 @@ Il2CppPostProcess/obj/
 
 # Large binaries (built separately)
 Il2CppDumperGUI/Resources/Il2CppPostProcess
+
+# Vendored CLI build outputs
+work/
+Il2CppDumperGUI/Resources/Il2CppDumper-arm64
+Il2CppDumperGUI/Resources/Il2CppDumper-x64
+vendor/AndnixSH/**/bin/
+vendor/AndnixSH/**/obj/
