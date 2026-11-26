@@ -23,8 +23,6 @@ Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) wit
 - **Universal binary** — Apple Silicon (arm64) + Intel (x86_64)
 - **macOS 12.0+** compatible
 
-Metadata v104–v111 layouts are covered by synthetic tests. A matching game binary and metadata pair is still needed for full dump validation of those versions.
-
 ## Screenshots
 
 | Main | Settings | About |

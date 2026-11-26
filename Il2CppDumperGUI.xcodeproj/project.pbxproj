@@ -467,7 +467,7 @@
 				CODE_SIGN_ENTITLEMENTS = Il2CppDumperGUI/Il2CppDumperGUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -484,7 +484,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "$(PROJECT_DIR)/.build/native-engine");
 				OTHER_LDFLAGS = ("$(inherited)", "-lIl2CppDumperNative", "-lc++", "-larchive");
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.leeksov.Il2CppDumperGUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -502,7 +502,7 @@
 				CODE_SIGN_ENTITLEMENTS = Il2CppDumperGUI/Il2CppDumperGUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Il2CppDumperGUI/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -519,7 +519,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "$(PROJECT_DIR)/.build/native-engine");
 				OTHER_LDFLAGS = ("$(inherited)", "-lIl2CppDumperNative", "-lc++", "-larchive");
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.leeksov.Il2CppDumperGUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
