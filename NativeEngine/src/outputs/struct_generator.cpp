@@ -612,7 +612,9 @@ void StructGenerator::writeScript(const std::string& outputDir) {
     std::string sb = HeaderConstants::GenericHeader;
     double v = il2Cpp->version;
     bool supported = true;
-    if (v == 22) {
+    if (v >= 35) {
+        sb += HeaderConstants::HeaderV35Plus;
+    } else if (v == 22) {
         sb += HeaderConstants::HeaderV22;
     } else if (v == 23 || v == 24) {
         sb += HeaderConstants::HeaderV240;
