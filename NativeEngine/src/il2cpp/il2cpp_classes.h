@@ -135,6 +135,8 @@ struct Il2CppMetadataRegistration {
     uint64_t typeDefinitionsSizes = 0;
     uint64_t metadataUsagesCount = 0;
     uint64_t metadataUsages = 0;
+    uint64_t alwaysInitMetadataUsagesCount = 0;
+    uint64_t alwaysInitMetadataUsages = 0;
 };
 
 struct Il2CppGenericContext {
@@ -248,7 +250,7 @@ inline Il2CppCodeRegistration BinaryStream::readClass<Il2CppCodeRegistration>() 
         t.delegateWrappersFromNativeToManagedCount = readUPtr();
         t.delegateWrappersFromNativeToManaged = readUPtr();
     }
-    if (inRange(22, 99)) {
+    if (inRange(22, 200)) {
         t.reversePInvokeWrapperCount = readUPtr();
         t.reversePInvokeWrappers = readUPtr();
     }
@@ -264,7 +266,7 @@ inline Il2CppCodeRegistration BinaryStream::readClass<Il2CppCodeRegistration>() 
     }
     t.genericMethodPointersCount = readUPtr();
     t.genericMethodPointers = readUPtr();
-    if (inRange(24.5, 24.5) || inRange(27.1, 99)) {
+    if (inRange(24.5, 24.5) || inRange(27.1, 200)) {
         t.genericAdjustorThunks = readUPtr();
     }
     t.invokerPointersCount = readUPtr();
@@ -277,23 +279,23 @@ inline Il2CppCodeRegistration BinaryStream::readClass<Il2CppCodeRegistration>() 
         t.guidCount = readUPtr();
         t.guids = readUPtr();
     }
-    if (inRange(22, 99)) {
+    if (inRange(22, 200)) {
         t.unresolvedVirtualCallCount = readUPtr();
         t.unresolvedVirtualCallPointers = readUPtr();
     }
-    if (inRange(29.1, 99)) {
+    if (inRange(29.1, 200)) {
         t.unresolvedInstanceCallPointers = readUPtr();
         t.unresolvedStaticCallPointers = readUPtr();
     }
-    if (inRange(23, 99)) {
+    if (inRange(23, 200)) {
         t.interopDataCount = readUPtr();
         t.interopData = readUPtr();
     }
-    if (inRange(24.3, 99)) {
+    if (inRange(24.3, 200)) {
         t.windowsRuntimeFactoryCount = readUPtr();
         t.windowsRuntimeFactoryTable = readUPtr();
     }
-    if (inRange(24.2, 99)) {
+    if (inRange(24.2, 200)) {
         t.codeGenModulesCount = readUPtr();
         t.codeGenModules = readUPtr();
     }
@@ -307,12 +309,16 @@ inline Il2CppMetadataRegistration BinaryStream::readClass<Il2CppMetadataRegistra
     t.genericClasses = readUPtr();
     t.genericInstsCount = readIPtr();
     t.genericInsts = readUPtr();
-    t.genericMethodTableCount = readIPtr();
-    t.genericMethodTable = readUPtr();
+    if (version <= 107) {
+        t.genericMethodTableCount = readIPtr();
+        t.genericMethodTable = readUPtr();
+    }
     t.typesCount = readIPtr();
     t.types = readUPtr();
-    t.methodSpecsCount = readIPtr();
-    t.methodSpecs = readUPtr();
+    if (version <= 107) {
+        t.methodSpecsCount = readIPtr();
+        t.methodSpecs = readUPtr();
+    }
     if (inRange(0, 16)) {
         t.methodReferencesCount = readIPtr();
         t.methodReferences = readUPtr();
@@ -321,9 +327,13 @@ inline Il2CppMetadataRegistration BinaryStream::readClass<Il2CppMetadataRegistra
     t.fieldOffsets = readUPtr();
     t.typeDefinitionsSizesCount = readIPtr();
     t.typeDefinitionsSizes = readUPtr();
-    if (inRange(19, 99)) {
+    if (inRange(19, 200)) {
         t.metadataUsagesCount = readUPtr();
         t.metadataUsages = readUPtr();
+    }
+    if (version >= 106.1) {
+        t.alwaysInitMetadataUsagesCount = readUPtr();
+        t.alwaysInitMetadataUsages = readUPtr();
     }
     return t;
 }
@@ -342,7 +352,7 @@ inline Il2CppGenericClass BinaryStream::readClass<Il2CppGenericClass>() {
     if (inRange(0, 24.5)) {
         t.typeDefinitionIndex = readIPtr();
     }
-    if (inRange(27, 99)) {
+    if (inRange(27, 200)) {
         t.type = readUPtr();
     }
     t.context = readClass<Il2CppGenericContext>();
@@ -375,7 +385,7 @@ inline Il2CppGenericMethodIndices BinaryStream::readClass<Il2CppGenericMethodInd
     Il2CppGenericMethodIndices t{};
     t.methodIndex = readI32();
     t.invokerIndex = readI32();
-    if (inRange(24.5, 24.5) || inRange(27.1, 99)) {
+    if (inRange(24.5, 24.5) || inRange(27.1, 200)) {
         t.adjustorThunk = readI32();
     }
     return t;
@@ -404,24 +414,26 @@ inline Il2CppCodeGenModule BinaryStream::readClass<Il2CppCodeGenModule>() {
     t.moduleName = readUPtr();
     t.methodPointerCount = readIPtr();
     t.methodPointers = readUPtr();
-    if (inRange(24.5, 24.5) || inRange(27.1, 99)) {
+    if (inRange(24.5, 24.5) || inRange(27.1, 200)) {
         t.adjustorThunkCount = readIPtr();
         t.adjustorThunks = readUPtr();
     }
-    t.invokerIndices = readUPtr();
+    if (version <= 107) t.invokerIndices = readUPtr();
     t.reversePInvokeWrapperCount = readUPtr();
     t.reversePInvokeWrapperIndices = readUPtr();
-    t.rgctxRangesCount = readIPtr();
-    t.rgctxRanges = readUPtr();
-    t.rgctxsCount = readIPtr();
-    t.rgctxs = readUPtr();
+    if (version <= 107) {
+        t.rgctxRangesCount = readIPtr();
+        t.rgctxRanges = readUPtr();
+        t.rgctxsCount = readIPtr();
+        t.rgctxs = readUPtr();
+    }
     t.debuggerMetadata = readUPtr();
     if (inRange(27, 27.2)) {
         t.customAttributeCacheGenerator = readUPtr();
     }
-    if (inRange(27, 99)) {
+    if (inRange(27, 200)) {
         t.moduleInitializer = readUPtr();
-        t.staticConstructorTypeIndices = readUPtr();
+        if (version <= 107) t.staticConstructorTypeIndices = readUPtr();
         t.metadataRegistration = readUPtr();
         t.codeRegistaration = readUPtr();
     }

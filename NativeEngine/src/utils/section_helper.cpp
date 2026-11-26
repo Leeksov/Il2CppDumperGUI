@@ -211,7 +211,8 @@ uint64_t SectionHelper::findMetadataRegistrationV21() {
                                 flag = checkPointerRangeDataVa(pointers);
                             }
                             if (flag) {
-                                return addr - il2Cpp->pointerSize() * 10 - section.offset + section.address;
+                                auto registrationOffset = il2Cpp->version >= 108 ? 6 : 10;
+                                return addr - il2Cpp->pointerSize() * registrationOffset - section.offset + section.address;
                             }
                         }
                     } catch (const std::exception&) {

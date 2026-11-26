@@ -286,8 +286,8 @@ void StructGenerator::writeScript(const std::string& outputDir) {
             const auto& typeDef = metadata->typeDefs[static_cast<size_t>(typeIndex)];
             addStruct(typeIndex);
             std::string typeName = executor.getTypeDefName(&typeDef, true, true);
-            int methodEnd = typeDef.methodStart + typeDef.method_count;
-            for (int i = typeDef.methodStart; i < methodEnd; ++i) {
+            for (int methodIndexInType = 0; methodIndexInType < typeDef.method_count; ++methodIndexInType) {
+                int i = metadata->getMethodIndexFromTypeDefinition(typeIndex, methodIndexInType);
                 const auto& methodDef = metadata->methodDefs[static_cast<size_t>(i)];
                 std::string methodName = metadata->getStringFromIndex(methodDef.nameIndex);
                 uint64_t methodPointer = il2Cpp->getMethodPointer(imageName, methodDef);
@@ -478,10 +478,11 @@ void StructGenerator::writeScript(const std::string& outputDir) {
                 size_t position = il2Cpp->position();
                 if (metadataValue < UINT32_MAX) {
                     uint32_t encodedToken = static_cast<uint32_t>(metadataValue);
-                    uint32_t usage = Metadata::getEncodedIndexType(encodedToken);
+                    uint32_t rawUsage = Metadata::getEncodedIndexType(encodedToken);
+                    uint32_t usage = metadata->getEncodedIndexTypeForVersion(encodedToken);
                     if (usage > 0 && usage <= 6) {
                         uint32_t decodedIndex = metadata->getDecodedMethodIndex(encodedToken);
-                        if (metadataValue == (static_cast<uint64_t>((usage << 29) | (decodedIndex << 1)) + 1)) {
+                        if (metadataValue == (static_cast<uint64_t>((rawUsage << 29) | (decodedIndex << 1)) + 1)) {
                             uint64_t va = il2Cpp->mapRTVA(addr);
                             if (va > 0) {
                                 switch (static_cast<Il2CppMetadataUsage>(usage)) {
@@ -975,7 +976,7 @@ void StructGenerator::addVTableMethod(StructInfo& structInfo, const Il2CppTypeDe
     for (int i = 0; i < typeDef->vtable_count; i++) {
         int vTableIndex = typeDef->vtableStart + i;
         uint32_t encodedMethodIndex = metadata->vtableMethods[static_cast<size_t>(vTableIndex)];
-        uint32_t usage = Metadata::getEncodedIndexType(encodedMethodIndex);
+        uint32_t usage = metadata->getEncodedIndexTypeForVersion(encodedMethodIndex);
         uint32_t index = metadata->getDecodedMethodIndex(encodedMethodIndex);
         const Il2CppMethodDefinition* methodDef;
         if (usage == 6) {
@@ -1007,7 +1008,7 @@ void StructGenerator::addRGCTX(StructInfo& structInfo, int typeDefIndex) {
         StructRGCTXInfo& info = structInfo.rgctxs.back();
         info.type = definitionData.type();
         Il2CppRGCTXDefinitionData rgctxDefData;
-        if (il2Cpp->version >= 27.2) {
+        if (il2Cpp->version >= 27.2 && il2Cpp->version < 108) {
             rgctxDefData = il2Cpp->mapVATRClass<Il2CppRGCTXDefinitionData>(definitionData._data);
         } else {
             rgctxDefData = definitionData.data;
@@ -1043,7 +1044,7 @@ std::vector<StructRGCTXInfo> StructGenerator::generateRGCTX(const std::string& i
         StructRGCTXInfo& info = rgctxs.back();
         info.type = definitionData.type();
         Il2CppRGCTXDefinitionData rgctxDefData;
-        if (il2Cpp->version >= 27.2) {
+        if (il2Cpp->version >= 27.2 && il2Cpp->version < 108) {
             rgctxDefData = il2Cpp->mapVATRClass<Il2CppRGCTXDefinitionData>(definitionData._data);
         } else {
             rgctxDefData = definitionData.data;

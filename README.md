@@ -7,7 +7,7 @@ Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) wit
 - **One executable** — native C++ parsing and output generation run inside the macOS app
 - **IPA / APK / XAPK / APKS auto-extraction** — drag & drop archive to dump
 - **All binary formats** — PE, ELF32/64, Mach-O 32/64, Fat Mach-O, WebAssembly, NSO
-- **IL2CPP metadata versions 16–31, 33, 35, 38 and 39** with automatic version detection
+- **IL2CPP metadata versions 16–31, 33, 35, 38, 39 and 104–111** with automatic version detection
 - **Full dump output:**
   - `dump.cs` — C# pseudocode (types, methods, fields, properties)
   - `script.json` — for Ghidra / IDA / Binary Ninja
@@ -22,6 +22,8 @@ Native macOS GUI for [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) wit
 - **Localization** — English / Russian
 - **Universal binary** — Apple Silicon (arm64) + Intel (x86_64)
 - **macOS 12.0+** compatible
+
+Metadata v104–v111 layouts are covered by synthetic tests. A matching game binary and metadata pair is still needed for full dump validation of those versions.
 
 ## Screenshots
 

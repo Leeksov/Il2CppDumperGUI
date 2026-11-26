@@ -247,14 +247,14 @@ void Il2CppDecompiler::decompile(const Config& config, const std::string& output
                         writer << "\t";
                         if (propertyDef.get >= 0) {
                             const auto& methodDef =
-                                metadata->methodDefs[static_cast<size_t>(typeDef.methodStart + propertyDef.get)];
+                                metadata->methodDefs[static_cast<size_t>(metadata->getMethodIndexFromTypeDefinition(typeDefIndex, propertyDef.get))];
                             writer << getModifiers(&methodDef);
                             const Il2CppType& propertyType = il2Cpp->types[static_cast<size_t>(methodDef.returnType)];
                             writer << executor.getTypeName(&propertyType, false, false) << " "
                                    << metadata->getStringFromIndex(propertyDef.nameIndex) << " { ";
                         } else if (propertyDef.set >= 0) {
                             const auto& methodDef =
-                                metadata->methodDefs[static_cast<size_t>(typeDef.methodStart + propertyDef.set)];
+                                metadata->methodDefs[static_cast<size_t>(metadata->getMethodIndexFromTypeDefinition(typeDefIndex, propertyDef.set))];
                             writer << getModifiers(&methodDef);
                             const auto& parameterDef =
                                 metadata->parameterDefs[static_cast<size_t>(methodDef.parameterStart)];
@@ -273,8 +273,8 @@ void Il2CppDecompiler::decompile(const Config& config, const std::string& output
                 }
                 if (config.DumpMethod && typeDef.method_count > 0) {
                     writer << "\n\t// Methods\n";
-                    int methodEnd = typeDef.methodStart + typeDef.method_count;
-                    for (int i = typeDef.methodStart; i < methodEnd; ++i) {
+                    for (int methodIndexInType = 0; methodIndexInType < typeDef.method_count; ++methodIndexInType) {
+                        int i = metadata->getMethodIndexFromTypeDefinition(typeDefIndex, methodIndexInType);
                         writer << "\n";
                         const auto& methodDef = metadata->methodDefs[static_cast<size_t>(i)];
                         bool isAbstract = (methodDef.flags & METHOD_ATTRIBUTE_ABSTRACT) != 0;

@@ -17,6 +17,21 @@ public:
     int typeDefinitionIndexSize = 4;
     int genericContainerIndexSize = 4;
     int parameterIndexSize = 4;
+    int eventIndexSize = 4;
+    int interfaceIndexSize = 4;
+    int nestedTypeIndexSize = 4;
+    int propertyIndexSize = 4;
+    int methodIndexSize = 4;
+    int genericParameterIndexSize = 4;
+    int fieldIndexSize = 4;
+    int defaultValueDataIndexSize = 4;
+    int genericInstIndexSize = 4;
+    int genericMethodIndexSize = 4;
+    int methodPointerTableIndexSize = 4;
+    int invokerTableIndexSize = 4;
+    int adjustorThunkIndexSize = 4;
+    int genericContainerRowSize = 16;
+    int assemblyRowSize = 0;
 
     explicit BinaryStream(std::vector<uint8_t> data) : data_(std::move(data)) {}
     virtual ~BinaryStream() = default;

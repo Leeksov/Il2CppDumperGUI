@@ -10,6 +10,7 @@
 #include "formats/macho64.h"
 #include "formats/macho_fat.h"
 #include "il2cpp/metadata.h"
+#include "il2cpp/unity_version.h"
 #include "formats/nso.h"
 #include "formats/pe.h"
 #include "formats/pe_loader.h"
@@ -92,6 +93,7 @@ bool process(const Config& config, const std::string& il2cppPath, const std::str
     auto metadataBytes = readFileBytes(metadataPath);
     auto metadata = std::make_unique<Metadata>(std::move(metadataBytes));
     std::cout << "Metadata Version: " << metadata->version << "\n";
+    std::cout << "Detected Unity Version: " << unityVersionRange(metadata->version) << "\n";
 
     std::cout << "Initializing il2cpp file...\n";
     auto il2CppBytes = readFileBytes(il2cppPath);
@@ -170,6 +172,7 @@ bool process(const Config& config, const std::string& il2cppPath, const std::str
     }
 
     auto version = config.ForceIl2CppVersion ? config.ForceVersion : metadata->version;
+    il2Cpp->metadata = metadata.get();
     il2Cpp->setProperties(version, metadata->metadataUsagesCount);
     std::cout << "Il2Cpp Version: " << il2Cpp->version << "\n";
     if (config.ForceDump || il2Cpp->checkDump()) {
@@ -214,6 +217,7 @@ bool process(const Config& config, const std::string& il2cppPath, const std::str
         if (!flag && dynamic_cast<PE*>(il2Cpp.get()) != nullptr) {
             std::cout << "Use custom PE loader\n";
             il2Cpp = PELoader::load(il2cppPath, il2CppBytes);
+            il2Cpp->metadata = metadata.get();
             il2Cpp->setProperties(version, metadata->metadataUsagesCount);
             flag = doPlusSearch();
         }

@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <stdexcept>
 #include <string>
+#include <unordered_set>
 
 namespace il2cppdumper {
 
@@ -111,6 +112,25 @@ void Il2Cpp::init(uint64_t codeRegistration, uint64_t metadataRegistration) {
         pCodeRegistration = mapVATRClass<Il2CppCodeRegistration>(codeRegistration);
     }
     pMetadataRegistration = mapVATRClass<Il2CppMetadataRegistration>(metadataRegistration);
+    if (version == 106) {
+        auto original = pMetadataRegistration;
+        try {
+            version = 106.1;
+            auto candidate = mapVATRClass<Il2CppMetadataRegistration>(metadataRegistration);
+            if (candidate.alwaysInitMetadataUsagesCount > 0 &&
+                candidate.alwaysInitMetadataUsagesCount < 0x1000 &&
+                mapVATR(candidate.alwaysInitMetadataUsages) < length()) {
+                pMetadataRegistration = candidate;
+                if (metadata) metadata->version = version;
+                std::printf("Change il2cpp version to: %g\n", version);
+            } else {
+                version = 106;
+            }
+        } catch (const std::exception&) {
+            version = 106;
+            pMetadataRegistration = original;
+        }
+    }
     genericMethodPointers = mapVATRArray<uint64_t>(pCodeRegistration.genericMethodPointers,
                                                    static_cast<int64_t>(pCodeRegistration.genericMethodPointersCount));
     invokerPointers = mapVATRArray<uint64_t>(pCodeRegistration.invokerPointers,
@@ -185,7 +205,7 @@ void Il2Cpp::init(uint64_t codeRegistration, uint64_t metadataRegistration) {
             codeGenModuleMethodPointers[moduleName] = std::move(moduleMethodPointers);
 
             auto& rgctxsDefDictionary = rgctxsDictionary[moduleName];
-            if (codeGenModule.rgctxsCount > 0) {
+            if (version < 108 && codeGenModule.rgctxsCount > 0) {
                 auto rgctxs = mapVATRArray<Il2CppRGCTXDefinition>(codeGenModule.rgctxs, codeGenModule.rgctxsCount);
                 auto rgctxRanges = mapVATRArray<Il2CppTokenRangePair>(codeGenModule.rgctxRanges,
                                                                       codeGenModule.rgctxRangesCount);
@@ -197,21 +217,61 @@ void Il2Cpp::init(uint64_t codeRegistration, uint64_t metadataRegistration) {
                 }
             }
         }
+        if (version >= 108 && metadata) {
+            for (const auto& image : metadata->imageDefs) {
+                auto name = metadata->getStringFromIndex(image.nameIndex);
+                if (name.empty()) continue;
+                auto& dictionary = rgctxsDictionary[name];
+                for (int i = 0; i < image.rgctxRangesCount; ++i) {
+                    auto rangeIndex = image.rgctxRangesStart + i;
+                    if (rangeIndex < 0 || static_cast<size_t>(rangeIndex) >= metadata->rgctxRanges.size()) continue;
+                    const auto& range = metadata->rgctxRanges[rangeIndex];
+                    if (range.range.start < 0 || range.range.length < 0 ||
+                        static_cast<size_t>(range.range.start + range.range.length) > metadata->rgctxEntries.size())
+                        continue;
+                    dictionary[range.token] = std::vector<Il2CppRGCTXDefinition>(
+                        metadata->rgctxEntries.begin() + range.range.start,
+                        metadata->rgctxEntries.begin() + range.range.start + range.range.length);
+                }
+            }
+        }
     } else {
         methodPointers = mapVATRArray<uint64_t>(pCodeRegistration.methodPointers,
                                                 static_cast<int64_t>(pCodeRegistration.methodPointersCount));
     }
-    genericMethodTable = mapVATRArray<Il2CppGenericMethodFunctionsDefinitions>(
-        pMetadataRegistration.genericMethodTable, static_cast<int64_t>(pMetadataRegistration.genericMethodTableCount));
-    methodSpecs = mapVATRArray<Il2CppMethodSpec>(pMetadataRegistration.methodSpecs,
-                                                 static_cast<int64_t>(pMetadataRegistration.methodSpecsCount));
+    if (version >= 108 && metadata) {
+        auto count = metadata->methodSpecsOnGenericType.size() +
+            metadata->genericMethodSpecsOnType.size() + metadata->methodSpecs.size();
+        methodSpecs.clear();
+        methodSpecs.reserve(count);
+        for (size_t i = 0; i < count; ++i) methodSpecs.push_back(metadata->getMethodSpec(static_cast<int>(i)));
+        genericMethodTable = metadata->genericMethodFunctionsDefinitions;
+        for (const auto& item : metadata->genericMethodFunctionsDefinitionsWithAdjustor) {
+            Il2CppGenericMethodFunctionsDefinitions entry;
+            entry.genericMethodIndex = item.genericMethodIndex;
+            entry.indices.methodIndex = item.methodIndex;
+            entry.indices.invokerIndex = item.invokerIndex;
+            entry.indices.adjustorThunk = item.adjustorThunkIndex;
+            genericMethodTable.push_back(entry);
+        }
+    } else {
+        genericMethodTable = mapVATRArray<Il2CppGenericMethodFunctionsDefinitions>(
+            pMetadataRegistration.genericMethodTable, static_cast<int64_t>(pMetadataRegistration.genericMethodTableCount));
+        methodSpecs = mapVATRArray<Il2CppMethodSpec>(pMetadataRegistration.methodSpecs,
+                                                     static_cast<int64_t>(pMetadataRegistration.methodSpecsCount));
+    }
     methodDefinitionMethodSpecs.clear();
     methodSpecGenericMethodPointers.clear();
+    std::unordered_set<int> seenGenericMethodIndices;
     for (const auto& table : genericMethodTable) {
+        if (table.genericMethodIndex < 0 || static_cast<size_t>(table.genericMethodIndex) >= methodSpecs.size()) continue;
         const auto& methodSpec = methodSpecs[static_cast<size_t>(table.genericMethodIndex)];
-        auto& list = methodDefinitionMethodSpecs[methodSpec.methodDefinitionIndex];
-        list.push_back(methodSpec);
-        methodSpecGenericMethodPointers[methodSpec] = genericMethodPointers[static_cast<size_t>(table.indices.methodIndex)];
+        if (version < 108 || seenGenericMethodIndices.insert(table.genericMethodIndex).second)
+            methodDefinitionMethodSpecs[methodSpec.methodDefinitionIndex].push_back(methodSpec);
+        auto pointerIndex = table.indices.methodIndex;
+        methodSpecGenericMethodPointers[methodSpec] = pointerIndex >= 0 &&
+            static_cast<size_t>(pointerIndex) < genericMethodPointers.size()
+            ? genericMethodPointers[pointerIndex] : 0;
     }
 }
 

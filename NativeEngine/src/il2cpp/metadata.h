@@ -1,6 +1,7 @@
 #pragma once
 
 #include "io/binary_stream.h"
+#include "il2cpp/il2cpp_classes.h"
 
 #include <array>
 #include <cstdint>
@@ -11,6 +12,11 @@
 
 namespace il2cppdumper {
 
+struct MetadataSection {
+    uint32_t offset = 0;
+    int32_t size = 0;
+    uint32_t count = 0;
+};
 
 enum class Il2CppRGCTXDataType : int {
     IL2CPP_RGCTX_DATA_INVALID = 0,
@@ -113,6 +119,27 @@ struct Il2CppGlobalMetadataHeader {
     uint32_t interfaceOffsetsCount = 0;
     uint32_t nestedTypesCount = 0;
     uint32_t genericParameterConstraintsCount = 0;
+    uint32_t eventsCount = 0;
+    uint32_t propertiesCount = 0;
+    uint32_t methodsCount = 0;
+    uint32_t assembliesCount = 0;
+    uint32_t fieldsCount = 0;
+    uint32_t genericParametersCount = 0;
+    uint32_t fieldAndParameterDefaultValueDataCount = 0;
+    uint32_t genericContainersSizeCount = 0;
+    MetadataSection methodSignatures;
+    MetadataSection typeInlineArrays;
+    MetadataSection methodSpecsOnGenericType;
+    MetadataSection genericMethodSpecsOnType;
+    MetadataSection methodSpecs;
+    MetadataSection genericMethodFunctionsDefinitions;
+    MetadataSection genericMethodFunctionsDefinitionsWithAdjustor;
+    MetadataSection invokerIndices;
+    MetadataSection rgctxRanges;
+    MetadataSection rgctxValues;
+    MetadataSection staticConstructorTypeIndices;
+    MetadataSection generatedMethodTypeInfos;
+    MetadataSection generatedMethodTokens;
 };
 
 struct Il2CppAssemblyNameDefinition {
@@ -135,6 +162,7 @@ struct Il2CppAssemblyDefinition {
     uint32_t token = 0;
     uint32_t moduleToken = 0;
     int32_t customAttributeIndex = 0;
+    int32_t unusedCustomAttributeIndex = 0;
     int32_t referencedAssemblyStart = 0;
     int32_t referencedAssemblyCount = 0;
     Il2CppAssemblyNameDefinition aname;
@@ -151,6 +179,15 @@ struct Il2CppImageDefinition {
     uint32_t token = 0;
     int32_t customAttributeStart = 0;
     uint32_t customAttributeCount = 0;
+    int32_t invokerIndicesStart = 0;
+    int32_t rgctxRangesStart = 0;
+    int32_t rgctxRangesCount = 0;
+    int32_t staticConstructorStart = 0;
+    int32_t staticConstructorCount = 0;
+    int32_t fieldStart = 0;
+    int32_t propertyStart = 0;
+    int32_t eventStart = 0;
+    int32_t methodStart = 0;
 };
 
 struct Il2CppTypeDefinition {
@@ -192,6 +229,7 @@ struct Il2CppTypeDefinition {
 
     bool isValueType() const { return (bitfield & 0x1) == 1; }
     bool isEnum() const { return ((bitfield >> 1) & 0x1) == 1; }
+    bool hasGeneratedMethods() const { return ((bitfield >> 19) & 0x1) == 1; }
 };
 
 struct Il2CppMethodDefinition {
@@ -212,6 +250,7 @@ struct Il2CppMethodDefinition {
     uint16_t iflags = 0;
     uint16_t slot = 0;
     uint16_t parameterCount = 0;
+    int32_t signatureOffset = -1;
 };
 
 struct Il2CppParameterDefinition {
@@ -322,6 +361,27 @@ struct Il2CppCustomAttributeDataRange {
     uint32_t startOffset = 0;
 };
 
+struct Il2CppMethodSpecOnGenericType {
+    int32_t methodDefinitionIndex = -1;
+    int32_t classIndexIndex = -1;
+};
+struct Il2CppGenericMethodSpecOnType {
+    int32_t methodDefinitionIndex = -1;
+    int32_t methodIndexIndex = -1;
+};
+struct Il2CppGenericMethodFunctionsDefinitionsWithAdjustor {
+    int32_t genericMethodIndex = -1;
+    int32_t methodIndex = -1;
+    int32_t invokerIndex = -1;
+    int32_t adjustorThunkIndex = -1;
+};
+struct Il2CppGeneratedMethodTypeInfo {
+    int32_t typeIndex = -1;
+    int32_t generatedMethodStart = -1;
+    int32_t generatedMethodCount = 0;
+};
+struct Il2CppGeneratedMethodToken { uint32_t token = 0; };
+
 template <>
 inline Il2CppGlobalMetadataHeader BinaryStream::readClass<Il2CppGlobalMetadataHeader>() {
     Il2CppGlobalMetadataHeader t{};
@@ -334,19 +394,27 @@ inline Il2CppGlobalMetadataHeader BinaryStream::readClass<Il2CppGlobalMetadataHe
             auto n = readU32();
             if (count) *count = n;
         };
+        auto extraSection = [this]() {
+            MetadataSection result;
+            result.offset = readU32();
+            result.size = readI32();
+            result.count = readU32();
+            return result;
+        };
         section(t.stringLiteralOffset, t.stringLiteralSize);
         section(t.stringLiteralDataOffset, t.stringLiteralDataSize);
         section(t.stringOffset, t.stringSize);
-        section(t.eventsOffset, t.eventsSize);
-        section(t.propertiesOffset, t.propertiesSize);
-        section(t.methodsOffset, t.methodsSize);
+        section(t.eventsOffset, t.eventsSize, &t.eventsCount);
+        section(t.propertiesOffset, t.propertiesSize, &t.propertiesCount);
+        if (version >= 111) t.methodSignatures = extraSection();
+        section(t.methodsOffset, t.methodsSize, &t.methodsCount);
         section(t.parameterDefaultValuesOffset, t.parameterDefaultValuesSize);
         section(t.fieldDefaultValuesOffset, t.fieldDefaultValuesSize);
-        section(t.fieldAndParameterDefaultValueDataOffset, t.fieldAndParameterDefaultValueDataSize);
+        section(t.fieldAndParameterDefaultValueDataOffset, t.fieldAndParameterDefaultValueDataSize, &t.fieldAndParameterDefaultValueDataCount);
         section(t.fieldMarshaledSizesOffset, t.fieldMarshaledSizesSize);
         section(t.parametersOffset, t.parametersSize, &t.parametersCount);
-        section(t.fieldsOffset, t.fieldsSize);
-        section(t.genericParametersOffset, t.genericParametersSize);
+        section(t.fieldsOffset, t.fieldsSize, &t.fieldsCount);
+        section(t.genericParametersOffset, t.genericParametersSize, &t.genericParametersCount);
         section(t.genericParameterConstraintsOffset, t.genericParameterConstraintsSize, &t.genericParameterConstraintsCount);
         section(t.genericContainersOffset, t.genericContainersSize, &t.genericContainersCount);
         section(t.nestedTypesOffset, t.nestedTypesSize, &t.nestedTypesCount);
@@ -354,8 +422,9 @@ inline Il2CppGlobalMetadataHeader BinaryStream::readClass<Il2CppGlobalMetadataHe
         section(t.vtableMethodsOffset, t.vtableMethodsSize);
         section(t.interfaceOffsetsOffset, t.interfaceOffsetsSize, &t.interfaceOffsetsCount);
         section(t.typeDefinitionsOffset, t.typeDefinitionsSize, &t.typeDefinitionsCount);
+        if (version >= 104) t.typeInlineArrays = extraSection();
         section(t.imagesOffset, t.imagesSize);
-        section(t.assembliesOffset, t.assembliesSize);
+        section(t.assembliesOffset, t.assembliesSize, &t.assembliesCount);
         section(t.fieldRefsOffset, t.fieldRefsSize);
         section(t.referencedAssembliesOffset, t.referencedAssembliesSize);
         section(t.attributeDataOffset, t.attributeDataSize);
@@ -365,6 +434,21 @@ inline Il2CppGlobalMetadataHeader BinaryStream::readClass<Il2CppGlobalMetadataHe
         section(t.windowsRuntimeTypeNamesOffset, t.windowsRuntimeTypeNamesSize);
         section(t.windowsRuntimeStringsOffset, t.windowsRuntimeStringsSize);
         section(t.exportedTypeDefinitionsOffset, t.exportedTypeDefinitionsSize);
+        if (version >= 108) {
+            t.methodSpecsOnGenericType = extraSection();
+            t.genericMethodSpecsOnType = extraSection();
+            t.methodSpecs = extraSection();
+            t.genericMethodFunctionsDefinitions = extraSection();
+            t.genericMethodFunctionsDefinitionsWithAdjustor = extraSection();
+            t.invokerIndices = extraSection();
+            t.rgctxRanges = extraSection();
+            t.rgctxValues = extraSection();
+            t.staticConstructorTypeIndices = extraSection();
+        }
+        if (version >= 110) {
+            t.generatedMethodTypeInfos = extraSection();
+            t.generatedMethodTokens = extraSection();
+        }
         return t;
     }
     t.stringLiteralOffset = readU32();
@@ -421,11 +505,11 @@ inline Il2CppGlobalMetadataHeader BinaryStream::readClass<Il2CppGlobalMetadataHe
         t.metadataUsagePairsOffset = readU32();
         t.metadataUsagePairsCount = readI32();
     }
-    if (inRange(19, 99)) {
+    if (inRange(19, 200)) {
         t.fieldRefsOffset = readU32();
         t.fieldRefsSize = readI32();
     }
-    if (inRange(20, 99)) {
+    if (inRange(20, 200)) {
         t.referencedAssembliesOffset = readI32();
         t.referencedAssembliesSize = readI32();
     }
@@ -435,27 +519,27 @@ inline Il2CppGlobalMetadataHeader BinaryStream::readClass<Il2CppGlobalMetadataHe
         t.attributeTypesOffset = readU32();
         t.attributeTypesCount = readI32();
     }
-    if (inRange(29, 99)) {
+    if (inRange(29, 200)) {
         t.attributeDataOffset = readU32();
         t.attributeDataSize = readI32();
         t.attributeDataRangeOffset = readU32();
         t.attributeDataRangeSize = readI32();
     }
-    if (inRange(22, 99)) {
+    if (inRange(22, 200)) {
         t.unresolvedVirtualCallParameterTypesOffset = readI32();
         t.unresolvedVirtualCallParameterTypesSize = readI32();
         t.unresolvedVirtualCallParameterRangesOffset = readI32();
         t.unresolvedVirtualCallParameterRangesSize = readI32();
     }
-    if (inRange(23, 99)) {
+    if (inRange(23, 200)) {
         t.windowsRuntimeTypeNamesOffset = readI32();
         t.windowsRuntimeTypeNamesSize = readI32();
     }
-    if (inRange(27, 99)) {
+    if (inRange(27, 200)) {
         t.windowsRuntimeStringsOffset = readI32();
         t.windowsRuntimeStringsSize = readI32();
     }
-    if (inRange(24, 99)) {
+    if (inRange(24, 200)) {
         t.exportedTypeDefinitionsOffset = readI32();
         t.exportedTypeDefinitionsSize = readI32();
     }
@@ -488,18 +572,23 @@ template <>
 inline Il2CppAssemblyDefinition BinaryStream::readClass<Il2CppAssemblyDefinition>() {
     Il2CppAssemblyDefinition t{};
     t.imageIndex = readI32();
-    if (inRange(24.1, 99)) {
+    if (inRange(24.1, 200)) {
         t.token = readU32();
     }
-    if (version >= 38) t.moduleToken = readU32();
     if (inRange(0, 24)) {
         t.customAttributeIndex = readI32();
     }
-    if (inRange(20, 99)) {
+    if (version >= 24.1 && assemblyRowSize >= 68) {
+        auto extra = readU32();
+        if (version >= 38 && assemblyRowSize == 68) t.moduleToken = extra;
+        else t.unusedCustomAttributeIndex = static_cast<int32_t>(extra);
+    }
+    if (inRange(20, 200)) {
         t.referencedAssemblyStart = readI32();
         t.referencedAssemblyCount = readI32();
     }
     t.aname = readClass<Il2CppAssemblyNameDefinition>();
+    if (version >= 38 && assemblyRowSize >= 72) t.moduleToken = readU32();
     return t;
 }
 
@@ -510,17 +599,30 @@ inline Il2CppImageDefinition BinaryStream::readClass<Il2CppImageDefinition>() {
     t.assemblyIndex = readI32();
     t.typeStart = readIndex(typeDefinitionIndexSize);
     t.typeCount = readU32();
-    if (inRange(24, 99)) {
+    if (inRange(24, 200)) {
         t.exportedTypeStart = readIndex(typeDefinitionIndexSize);
         t.exportedTypeCount = readU32();
     }
-    t.entryPointIndex = readI32();
-    if (inRange(19, 99)) {
+    t.entryPointIndex = readIndex(methodIndexSize);
+    if (inRange(19, 200)) {
         t.token = readU32();
     }
-    if (inRange(24.1, 99)) {
+    if (inRange(24.1, 200)) {
         t.customAttributeStart = readI32();
         t.customAttributeCount = readU32();
+    }
+    if (version >= 108) {
+        t.invokerIndicesStart = readI32();
+        t.rgctxRangesStart = readI32();
+        t.rgctxRangesCount = readI32();
+        t.staticConstructorStart = readIndex(typeDefinitionIndexSize);
+        t.staticConstructorCount = readI32();
+    }
+    if (version >= 110) {
+        t.fieldStart = readI32();
+        t.propertyStart = readI32();
+        t.eventStart = readI32();
+        t.methodStart = readIndex(methodIndexSize);
     }
     return t;
 }
@@ -554,14 +656,14 @@ inline Il2CppTypeDefinition BinaryStream::readClass<Il2CppTypeDefinition>() {
         t.guidIndex = readI32();
     }
     t.flags = readU32();
-    t.fieldStart = readI32();
-    t.methodStart = readI32();
-    t.eventStart = readI32();
-    t.propertyStart = readI32();
-    t.nestedTypesStart = readI32();
-    t.interfacesStart = readI32();
+    t.fieldStart = readIndex(fieldIndexSize);
+    t.methodStart = readIndex(methodIndexSize);
+    t.eventStart = readIndex(eventIndexSize);
+    t.propertyStart = readIndex(propertyIndexSize);
+    t.nestedTypesStart = readIndex(nestedTypeIndexSize);
+    t.interfacesStart = readIndex(interfaceIndexSize);
     t.vtableStart = readI32();
-    t.interfaceOffsetsStart = readI32();
+    t.interfaceOffsetsStart = readIndex(interfaceIndexSize);
     t.method_count = readU16();
     t.property_count = readU16();
     t.field_count = readU16();
@@ -571,7 +673,7 @@ inline Il2CppTypeDefinition BinaryStream::readClass<Il2CppTypeDefinition>() {
     t.interfaces_count = readU16();
     t.interface_offsets_count = readU16();
     t.bitfield = readU32();
-    if (inRange(19, 99)) {
+    if (inRange(19, 109)) {
         t.token = readU32();
     }
     return t;
@@ -580,10 +682,21 @@ inline Il2CppTypeDefinition BinaryStream::readClass<Il2CppTypeDefinition>() {
 template <>
 inline Il2CppMethodDefinition BinaryStream::readClass<Il2CppMethodDefinition>() {
     Il2CppMethodDefinition t{};
+    if (version >= 111) {
+        t.nameIndex = readU32();
+        t.declaringType = readIndex(typeDefinitionIndexSize);
+        t.parameterStart = readIndex(parameterIndexSize);
+        t.genericContainerIndex = readIndex(genericContainerIndexSize);
+        t.flags = readU16();
+        t.iflags = readU16();
+        t.slot = readU16();
+        t.signatureOffset = readI32();
+        return t;
+    }
     t.nameIndex = readU32();
     t.declaringType = readIndex(typeDefinitionIndexSize);
     t.returnType = readIndex(typeIndexSize);
-    if (inRange(31, 99)) {
+    if (inRange(31, 200)) {
         t.returnParameterToken = readI32();
     }
     t.parameterStart = readIndex(parameterIndexSize);
@@ -598,7 +711,7 @@ inline Il2CppMethodDefinition BinaryStream::readClass<Il2CppMethodDefinition>() 
         t.rgctxStartIndex = readI32();
         t.rgctxCount = readI32();
     }
-    t.token = readU32();
+    if (version < 110) t.token = readU32();
     t.flags = readU16();
     t.iflags = readU16();
     t.slot = readU16();
@@ -610,6 +723,7 @@ template <>
 inline Il2CppParameterDefinition BinaryStream::readClass<Il2CppParameterDefinition>() {
     Il2CppParameterDefinition t{};
     t.nameIndex = readU32();
+    if (version >= 111) return t;
     t.token = readU32();
     if (inRange(0, 24)) {
         t.customAttributeIndex = readI32();
@@ -626,7 +740,7 @@ inline Il2CppFieldDefinition BinaryStream::readClass<Il2CppFieldDefinition>() {
     if (inRange(0, 24)) {
         t.customAttributeIndex = readI32();
     }
-    if (inRange(19, 99)) {
+    if (inRange(19, 109)) {
         t.token = readU32();
     }
     return t;
@@ -635,9 +749,9 @@ inline Il2CppFieldDefinition BinaryStream::readClass<Il2CppFieldDefinition>() {
 template <>
 inline Il2CppFieldDefaultValue BinaryStream::readClass<Il2CppFieldDefaultValue>() {
     Il2CppFieldDefaultValue t{};
-    t.fieldIndex = readI32();
+    t.fieldIndex = readIndex(fieldIndexSize);
     t.typeIndex = readIndex(typeIndexSize);
-    t.dataIndex = readI32();
+    t.dataIndex = readIndex(defaultValueDataIndexSize);
     return t;
 }
 
@@ -645,13 +759,13 @@ template <>
 inline Il2CppPropertyDefinition BinaryStream::readClass<Il2CppPropertyDefinition>() {
     Il2CppPropertyDefinition t{};
     t.nameIndex = readU32();
-    t.get = readI32();
-    t.set = readI32();
+    t.get = readIndex(methodIndexSize);
+    t.set = readIndex(methodIndexSize);
     t.attrs = readU32();
     if (inRange(0, 24)) {
         t.customAttributeIndex = readI32();
     }
-    if (inRange(19, 99)) {
+    if (inRange(19, 109)) {
         t.token = readU32();
     }
     return t;
@@ -660,7 +774,7 @@ inline Il2CppPropertyDefinition BinaryStream::readClass<Il2CppPropertyDefinition
 template <>
 inline Il2CppCustomAttributeTypeRange BinaryStream::readClass<Il2CppCustomAttributeTypeRange>() {
     Il2CppCustomAttributeTypeRange t{};
-    if (inRange(24.1, 99)) {
+    if (inRange(24.1, 200)) {
         t.token = readU32();
     }
     t.start = readI32();
@@ -697,7 +811,7 @@ inline Il2CppParameterDefaultValue BinaryStream::readClass<Il2CppParameterDefaul
     Il2CppParameterDefaultValue t{};
     t.parameterIndex = readIndex(parameterIndexSize);
     t.typeIndex = readIndex(typeIndexSize);
-    t.dataIndex = readI32();
+    t.dataIndex = readIndex(defaultValueDataIndexSize);
     return t;
 }
 
@@ -706,13 +820,13 @@ inline Il2CppEventDefinition BinaryStream::readClass<Il2CppEventDefinition>() {
     Il2CppEventDefinition t{};
     t.nameIndex = readU32();
     t.typeIndex = readIndex(typeIndexSize);
-    t.add = readI32();
-    t.remove = readI32();
-    t.raise = readI32();
+    t.add = readIndex(methodIndexSize);
+    t.remove = readIndex(methodIndexSize);
+    t.raise = readIndex(methodIndexSize);
     if (inRange(0, 24)) {
         t.customAttributeIndex = readI32();
     }
-    if (inRange(19, 99)) {
+    if (inRange(19, 109)) {
         t.token = readU32();
     }
     return t;
@@ -722,9 +836,16 @@ template <>
 inline Il2CppGenericContainer BinaryStream::readClass<Il2CppGenericContainer>() {
     Il2CppGenericContainer t{};
     t.ownerIndex = readI32();
-    t.type_argc = readI32();
-    t.is_method = readI32();
-    t.genericParameterStart = readI32();
+    if (version >= 106) {
+        t.type_argc = readU16();
+        t.is_method = readU8();
+        auto compactSize = 7 + genericParameterIndexSize;
+        if (genericContainerRowSize > compactSize) seek(genericContainerRowSize - compactSize);
+    } else {
+        t.type_argc = readI32();
+        t.is_method = readI32();
+    }
+    t.genericParameterStart = readIndex(genericParameterIndexSize);
     return t;
 }
 
@@ -732,7 +853,7 @@ template <>
 inline Il2CppFieldRef BinaryStream::readClass<Il2CppFieldRef>() {
     Il2CppFieldRef t{};
     t.typeIndex = readIndex(typeIndexSize);
-    t.fieldIndex = readI32();
+    t.fieldIndex = readIndex(fieldIndexSize);
     return t;
 }
 
@@ -762,10 +883,10 @@ inline Il2CppRGCTXDefinition BinaryStream::readClass<Il2CppRGCTXDefinition>() {
         t.type_pre29 = readI32();
         t.data = readClass<Il2CppRGCTXDefinitionData>();
     }
-    if (inRange(29, 99)) {
+    if (inRange(29, 200)) {
         t.type_post29 = readUPtr();
     }
-    if (inRange(27.2, 99)) {
+    if (inRange(27.2, 200)) {
         t._data = readUPtr();
     }
     return t;
@@ -808,6 +929,17 @@ public:
     std::vector<Il2CppGenericParameter> genericParameters;
     std::vector<int> constraintIndices;
     std::vector<uint32_t> vtableMethods;
+    std::vector<Il2CppTokenRangePair> rgctxRanges;
+    std::vector<Il2CppMethodSpecOnGenericType> methodSpecsOnGenericType;
+    std::vector<Il2CppGenericMethodSpecOnType> genericMethodSpecsOnType;
+    std::vector<Il2CppMethodSpec> methodSpecs;
+    std::vector<Il2CppGenericMethodFunctionsDefinitions> genericMethodFunctionsDefinitions;
+    std::vector<Il2CppGenericMethodFunctionsDefinitionsWithAdjustor> genericMethodFunctionsDefinitionsWithAdjustor;
+    std::vector<int32_t> invokerIndices;
+    std::vector<Il2CppGeneratedMethodTypeInfo> generatedMethodTypeInfos;
+    std::vector<Il2CppGeneratedMethodToken> generatedMethodTokens;
+    std::unordered_map<int, Il2CppGeneratedMethodTypeInfo> generatedMethodTypeInfoDic;
+    int generatedMethodsStart = 0;
     std::vector<Il2CppRGCTXDefinition> rgctxEntries;
 
     explicit Metadata(std::vector<uint8_t> data);
@@ -840,6 +972,12 @@ public:
 
     std::string getStringLiteralFromIndex(uint32_t index);
 
+    int getMethodIndexFromTypeDefinition(int typeIndex, int methodIndexInType) const;
+    Il2CppMethodSpec getMethodSpec(int index) const;
+    uint32_t getMethodToken(const Il2CppImageDefinition& image, const Il2CppTypeDefinition& type,
+                            int typeIndex, int methodIndex) const;
+    uint32_t getEncodedIndexTypeForVersion(uint32_t index) const;
+
     static uint32_t getEncodedIndexType(uint32_t index) { return (index & 0xE0000000) >> 29; }
 
     uint32_t getDecodedMethodIndex(uint32_t index) const {
@@ -855,6 +993,7 @@ private:
         return readClassArrayAt<T>(addr, byteCount / static_cast<int64_t>(sizeOfClass<T>()));
     }
     void processingMetadataUsage();
+    void computeV110MetadataTokens();
 
     std::unordered_map<uint32_t, std::string> stringCache;
 };

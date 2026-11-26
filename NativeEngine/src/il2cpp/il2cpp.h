@@ -39,6 +39,7 @@ public:
     std::unordered_map<std::string, std::vector<uint64_t>> codeGenModuleMethodPointers;
     std::unordered_map<std::string, std::unordered_map<uint32_t, std::vector<Il2CppRGCTXDefinition>>> rgctxsDictionary;
     bool isDumped = false;
+    Metadata* metadata = nullptr;
 
     virtual uint64_t mapVATR(uint64_t addr) = 0;
     virtual uint64_t mapRTVA(uint64_t addr) = 0;

@@ -542,12 +542,13 @@ struct DummyAssemblyGenerator::Impl {
 
 
     const Il2CppType* propertyType(const Il2CppTypeDefinition& typeDef, const Il2CppPropertyDefinition& pDef) {
+        int typeIndex = static_cast<int>(&typeDef - metadata.typeDefs.data());
         if (pDef.get >= 0) {
-            const auto& m = metadata.methodDefs[static_cast<size_t>(typeDef.methodStart + pDef.get)];
+            const auto& m = metadata.methodDefs[static_cast<size_t>(metadata.getMethodIndexFromTypeDefinition(typeIndex, pDef.get))];
             return &il2Cpp.types[static_cast<size_t>(m.returnType)];
         }
         if (pDef.set >= 0) {
-            const auto& m = metadata.methodDefs[static_cast<size_t>(typeDef.methodStart + pDef.set)];
+            const auto& m = metadata.methodDefs[static_cast<size_t>(metadata.getMethodIndexFromTypeDefinition(typeIndex, pDef.set))];
             const auto& p = metadata.parameterDefs[static_cast<size_t>(m.parameterStart)];
             return &il2Cpp.types[static_cast<size_t>(p.typeIndex)];
         }
@@ -712,9 +713,10 @@ struct DummyAssemblyGenerator::Impl {
             return false;
         }
         if (td.method_count == 1) {
-            const auto& m = metadata.methodDefs[static_cast<size_t>(td.methodStart)];
+            int methodIndex = metadata.getMethodIndexFromTypeDefinition(attrTypeDefIndex, 0);
+            const auto& m = metadata.methodDefs[static_cast<size_t>(methodIndex)];
             if (metadata.getStringFromIndex(m.nameIndex) == ".ctor" && m.parameterCount == 0) {
-                auto it = c.methodRow.find(td.methodStart);
+                auto it = c.methodRow.find(methodIndex);
                 if (it != c.methodRow.end()) {
                     c.writer.addCustomAttribute(parentCoded, (it->second << 3) | Tag::CustomAttributeType_MethodDef,
                                                 c.writer.blobIndex({0x01, 0x00, 0x00, 0x00}));
@@ -1325,7 +1327,7 @@ struct DummyAssemblyGenerator::Impl {
             }
 
             for (int j = 0; j < td.method_count; j++) {
-                int mi = td.methodStart + j;
+                int mi = metadata.getMethodIndexFromTypeDefinition(i, j);
                 const auto& md = metadata.methodDefs[static_cast<size_t>(mi)];
                 const auto* rt = &il2Cpp.types[static_cast<size_t>(md.returnType)];
                 auto retBytes = typeBytesWithByRef(c, rt);
@@ -1401,10 +1403,10 @@ struct DummyAssemblyGenerator::Impl {
                 int idxCount = 0;
                 const Il2CppMethodDefinition* accessor = nullptr;
                 if (pd.get >= 0) {
-                    accessor = &metadata.methodDefs[static_cast<size_t>(td.methodStart + pd.get)];
+                    accessor = &metadata.methodDefs[static_cast<size_t>(metadata.getMethodIndexFromTypeDefinition(i, pd.get))];
                     idxCount = accessor->parameterCount;
                 } else if (pd.set >= 0) {
-                    accessor = &metadata.methodDefs[static_cast<size_t>(td.methodStart + pd.set)];
+                    accessor = &metadata.methodDefs[static_cast<size_t>(metadata.getMethodIndexFromTypeDefinition(i, pd.set))];
                     idxCount = accessor->parameterCount > 0 ? accessor->parameterCount - 1 : 0;
                 }
                 const auto* ptype = propertyType(td, pd);
@@ -1427,10 +1429,10 @@ struct DummyAssemblyGenerator::Impl {
                 c.propertyRow[pi] = prow;
                 uint32_t assoc = (prow << 1) | Tag::HasSemantics_Property;
                 if (pd.get >= 0) {
-                    c.writer.addMethodSemantics(0x2, c.methodRow.at(td.methodStart + pd.get), assoc);
+                    c.writer.addMethodSemantics(0x2, c.methodRow.at(metadata.getMethodIndexFromTypeDefinition(i, pd.get)), assoc);
                 }
                 if (pd.set >= 0) {
-                    c.writer.addMethodSemantics(0x1, c.methodRow.at(td.methodStart + pd.set), assoc);
+                    c.writer.addMethodSemantics(0x1, c.methodRow.at(metadata.getMethodIndexFromTypeDefinition(i, pd.set)), assoc);
                 }
                 if (addToken) {
                     addTokenAttribute(c, (prow << 5) | Tag::HasCustomAttribute_Property, pd.token);
@@ -1450,13 +1452,13 @@ struct DummyAssemblyGenerator::Impl {
                 c.eventRow[ei] = erow;
                 uint32_t assoc = (erow << 1) | Tag::HasSemantics_Event;
                 if (ed.add >= 0) {
-                    c.writer.addMethodSemantics(0x8, c.methodRow.at(td.methodStart + ed.add), assoc);
+                    c.writer.addMethodSemantics(0x8, c.methodRow.at(metadata.getMethodIndexFromTypeDefinition(i, ed.add)), assoc);
                 }
                 if (ed.remove >= 0) {
-                    c.writer.addMethodSemantics(0x10, c.methodRow.at(td.methodStart + ed.remove), assoc);
+                    c.writer.addMethodSemantics(0x10, c.methodRow.at(metadata.getMethodIndexFromTypeDefinition(i, ed.remove)), assoc);
                 }
                 if (ed.raise >= 0) {
-                    c.writer.addMethodSemantics(0x20, c.methodRow.at(td.methodStart + ed.raise), assoc);
+                    c.writer.addMethodSemantics(0x20, c.methodRow.at(metadata.getMethodIndexFromTypeDefinition(i, ed.raise)), assoc);
                 }
                 if (addToken) {
                     addTokenAttribute(c, (erow << 5) | Tag::HasCustomAttribute_Event, ed.token);
@@ -1477,7 +1479,7 @@ struct DummyAssemblyGenerator::Impl {
                                           (c.fieldRow.at(fi) << 5) | Tag::HasCustomAttribute_Field);
                 }
                 for (int j = 0; j < td.method_count; j++) {
-                    int mi = td.methodStart + j;
+                    int mi = metadata.getMethodIndexFromTypeDefinition(i, j);
                     const auto& md = metadata.methodDefs[static_cast<size_t>(mi)];
                     createCustomAttribute(c, imageIndex, md.customAttributeIndex, md.token,
                                           (c.methodRow.at(mi) << 5) | Tag::HasCustomAttribute_MethodDef);
