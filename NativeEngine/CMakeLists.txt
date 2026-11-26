@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.16)
+project(Il2CppDumper LANGUAGES C CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS src/*.cpp)
+add_library(Il2CppDumperNative STATIC ${ENGINE_SOURCES} third_party/lz4.c)
+target_include_directories(Il2CppDumperNative PRIVATE src include third_party)

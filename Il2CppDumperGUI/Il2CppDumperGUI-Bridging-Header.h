@@ -1,1 +1,1 @@
-#import "Il2CppDumperLib/il2cpp_bridge.h"
+#import "../NativeEngine/include/il2cpp_native.h"

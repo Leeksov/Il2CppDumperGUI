@@ -55,7 +55,7 @@ extension Bundle {
         return currentBundle.localizedString(forKey: key, value: nil, table: nil)
     }
 }
-private class PrivateBundle: Bundle {
+private class PrivateBundle: Bundle, @unchecked Sendable {
     override func localizedString(forKey key: String, value: String?, table: String?) -> String {
         return Bundle.currentBundle.localizedString(forKey: key, value: value, table: table)
     }

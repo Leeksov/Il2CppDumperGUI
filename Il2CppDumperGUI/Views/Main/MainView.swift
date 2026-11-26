@@ -3,10 +3,6 @@ import AppKit
 import UniformTypeIdentifiers
 import Foundation
 
-extension Notification.Name {
-    static let il2cppLog = Notification.Name("il2cppLog")
-}
-
 // ============================================================
 // MARK: - Archive Extractor (IPA/APK/XAPK/ZIP support)
 // ============================================================
@@ -208,41 +204,10 @@ struct ArchiveExtractor {
         return ["ipa", "apk", "apks", "xapk", "apkm", "zip"].contains(ext)
     }
 
-    // Native Swift ZIP extraction (no Process needed, works in sandbox)
     private static func unzip(zipPath: String, destDir: String) -> Bool {
-        let fm = FileManager.default
-        try? fm.createDirectory(atPath: destDir, withIntermediateDirectories: true)
-
-        // Try Process first (works when not sandboxed)
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
-        process.arguments = ["-xk", zipPath, destDir]
-        process.standardOutput = FileHandle.nullDevice
-        process.standardError = FileHandle.nullDevice
-        do {
-            try process.run()
-            process.waitUntilExit()
-            if process.terminationStatus == 0 {
-                return true
-            }
-        } catch {
-            // ditto failed (sandbox?), try /usr/bin/unzip
-        }
-
-        // Fallback: /usr/bin/unzip
-        let unzipProc = Process()
-        unzipProc.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
-        unzipProc.arguments = ["-o", "-q", zipPath, "-d", destDir]
-        unzipProc.standardOutput = FileHandle.nullDevice
-        unzipProc.standardError = FileHandle.nullDevice
-        do {
-            try unzipProc.run()
-            unzipProc.waitUntilExit()
-            return unzipProc.terminationStatus == 0
-        } catch {
-            return false
-        }
+        il2cpp_extract_zip(zipPath, destDir) == 0
     }
+
 }
 
 // ============================================================
@@ -494,7 +459,8 @@ struct MainView: View {
         let panel = NSOpenPanel()
         panel.canChooseFiles = true; panel.canChooseDirectories = false; panel.allowsMultipleSelection = false
         if !extensions.isEmpty { panel.allowedContentTypes = extensions.compactMap { UTType(filenameExtension: $0) } }
-        if panel.runModal() == .OK, let url = panel.url {
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
             path.wrappedValue = url.path
             if autoSetOutputDirectory { outputDirectoryPath = url.deletingLastPathComponent().path }
         }
@@ -503,7 +469,9 @@ struct MainView: View {
     private func pickFolder(for path: Binding<String>) {
         let panel = NSOpenPanel()
         panel.canChooseFiles = false; panel.canChooseDirectories = true; panel.allowsMultipleSelection = false
-        if panel.runModal() == .OK, let url = panel.url { path.wrappedValue = url.path }
+        panel.begin { response in
+            if response == .OK, let url = panel.url { path.wrappedValue = url.path }
+        }
     }
 
     private func openOutputFolder() {
@@ -533,7 +501,7 @@ struct MainView: View {
                 }
 
                 try? FileManager.default.createDirectory(atPath: game.outputDir, withIntermediateDirectories: true)
-                performDump(exe: game.binaryPath, meta: game.metadataPath, outDir: game.outputDir)
+                _ = performDump(exe: game.binaryPath, meta: game.metadataPath, outDir: game.outputDir)
             }
 
             DispatchQueue.main.async { isDumping = false }
@@ -563,59 +531,57 @@ struct MainView: View {
         let exe = executableFilePath, meta = globalMetadataPath, outDir = outputDirectoryPath
 
         DispatchQueue.global(qos: .userInitiated).async {
-            performDump(exe: exe, meta: meta, outDir: outDir)
+            let succeeded = performDump(exe: exe, meta: meta, outDir: outDir)
             DispatchQueue.main.async {
                 isDumping = false
-                copySelectedScripts()
+                if succeeded { copySelectedScripts() }
             }
         }
     }
 
     // MARK: - Core Dump
-    private func performDump(exe: String, meta: String, outDir: String) {
-        let cfgMethod = dumpMethod ? Int32(1) : 0
-        let cfgField = dumpField ? Int32(1) : 0
-        let cfgProp = dumpProperty ? Int32(1) : 0
-        let cfgAttr = dumpAttribute ? Int32(1) : 0
-        let cfgFieldOff = dumpFieldOffset ? Int32(1) : 0
-        let cfgMethodOff = dumpMethodOffset ? Int32(1) : 0
-        let cfgTypeIdx = dumpTypeDefIndex ? Int32(1) : 0
-        let cfgForceVer = forceIl2CppVersion ? Int32(1) : 0
-        let cfgVer = Double(forceVersion) ?? 24.3
-        let cfgForceDump = forceDump ? Int32(1) : 0
-        let manualCode = codeRegistration
-        let manualMeta = metadataRegistration
-        let postProcessPath = Bundle.main.path(forResource: "Il2CppPostProcess", ofType: nil) ?? ""
-
-        let logObserver = NotificationCenter.default.addObserver(
-            forName: .il2cppLog, object: nil, queue: .main
-        ) { n in
-            if let msg = n.userInfo?["message"] as? String { logText += "\(msg)\n" }
-        }
-
-        let result = il2cpp_dump_ex(
-            exe, meta, outDir,
-            cfgMethod, cfgField, cfgProp, cfgAttr,
-            cfgFieldOff, cfgMethodOff, cfgTypeIdx,
-            cfgForceVer, cfgVer, cfgForceDump,
-            manualCode, manualMeta, postProcessPath,
-            { cStr, _ in
-                guard let cStr = cStr else { return }
-                NotificationCenter.default.post(name: .il2cppLog, object: nil, userInfo: ["message": String(cString: cStr)])
-            },
-            nil
-        )
-
-        NotificationCenter.default.removeObserver(logObserver)
-
-        DispatchQueue.main.async {
-            if result == 0 {
-                appendLog(LocalizedString("dump_done"))
-            } else {
-                let err = String(cString: il2cpp_get_last_error())
-                appendLog(LocalizedString("dump_failed_code", result))
-                if !err.isEmpty { appendLog(err) }
+    private func performDump(exe: String, meta: String, outDir: String) -> Bool {
+        let config: [String: Any] = [
+            "DumpMethod": dumpMethod, "DumpField": dumpField,
+            "DumpProperty": dumpProperty, "DumpAttribute": dumpAttribute,
+            "DumpFieldOffset": dumpFieldOffset, "DumpMethodOffset": dumpMethodOffset,
+            "DumpTypeDefIndex": dumpTypeDefIndex,
+            "GenerateStruct": generateStruct, "GenerateDummyDll": true,
+            "DummyDllAddToken": true, "RequireAnyKey": false,
+            "ForceIl2CppVersion": forceIl2CppVersion,
+            "ForceVersion": Double(forceVersion) ?? 24.3,
+            "ForceDump": forceDump
+        ]
+        let configURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("il2cpp-config-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: configURL) }
+        do {
+            try FileManager.default.createDirectory(atPath: outDir, withIntermediateDirectories: true)
+            try JSONSerialization.data(withJSONObject: config).write(to: configURL)
+            let messages = NSMutableArray()
+            let context = Unmanaged.passUnretained(messages).toOpaque()
+            let result = il2cpp_dump_native(
+                exe, meta, outDir, configURL.path,
+                codeRegistration, metadataRegistration,
+                { cString, context in
+                    guard let cString, let context else { return }
+                    let messages = Unmanaged<NSMutableArray>.fromOpaque(context).takeUnretainedValue()
+                    messages.add(String(cString: cString))
+                }, context
+            )
+            let lines = messages.compactMap { $0 as? String }
+            DispatchQueue.main.async {
+                for line in lines { appendLog(line) }
+                if result == 0 {
+                    appendLog(LocalizedString("dump_done"))
+                } else {
+                    appendLog(LocalizedString("dump_failed_code", result))
+                }
             }
+            return result == 0
+        } catch {
+            DispatchQueue.main.async { appendLog("Dump failed: \(error.localizedDescription)") }
+            return false
         }
     }
 
